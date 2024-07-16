@@ -61,7 +61,7 @@ public class Server {
 	public void timer(Instant finish) {
 		Thread thread = new Thread(()->{
 			while(finish.isAfter(Instant.now())) {
-
+				
 			}
 			System.out.println("[ 경매 종료 ]");
 			Item close = null;
