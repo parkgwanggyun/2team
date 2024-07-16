@@ -112,7 +112,9 @@ public class Client {
 					
 				}
 				item = (Item)ois.readObject();
-				System.out.println(item.getBidder() + "님 낙찰 축하합니다.");
+				if(item != null) {
+					System.out.println(item.getBidder() + "님 낙찰 축하합니다.");
+				}
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}

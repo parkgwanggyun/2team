@@ -68,9 +68,7 @@ public class Server {
 			sendAll(close);			
 			Auctioneer.itemList.add(highestBid);
 			saveItemList(file);
-			if(highestBid != null) {
-				sendAll(highestBid);
-			}
+			sendAll(highestBid);
 		});
 		thread.start();
 	}
