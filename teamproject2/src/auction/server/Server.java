@@ -31,7 +31,7 @@ public class Server {
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 	public final static String EXIT = "-quit";
-	private Item highestBid;
+	private Item highestBid = null;
 	private File file = new File("src/auction/server/itemData.txt");
 	public static Scanner scan = new Scanner(System.in);
 
@@ -61,18 +61,22 @@ public class Server {
 	public void timer(Instant finish) {
 		Thread thread = new Thread(()->{
 			while(finish.isAfter(Instant.now())) {
-
+				
 			}
 			System.out.println("[ 경매 종료 ]");
 			Item close = null;
-			sendAll(close);
+			sendAll(close);			
 			Auctioneer.itemList.add(highestBid);
 			saveItemList(file);
+			if(highestBid != null) {
+				sendAll(highestBid);
+			}
 		});
 		thread.start();
 	}
 
 	public void receive(Item item, Instant finish) {
+		timer(finish);
 		Thread thread = new Thread(()->{
 			String id = "";
 			try {

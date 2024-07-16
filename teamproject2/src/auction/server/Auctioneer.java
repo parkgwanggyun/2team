@@ -55,7 +55,7 @@ public class Auctioneer {
 					System.out.println("[" + socket.getLocalAddress() + " : " + socket.getPort() + "에서 접속]");
 				}				
 				Server server = new Server(list, socket);
-				server.timer(finish);
+//				server.timer(finish);
 				server.receive(item, finish);
 			}
 		} catch (IOException e) {
@@ -126,7 +126,7 @@ public class Auctioneer {
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))){
 			return  (List<Item>)ois.readObject();
 		} catch (Exception e) {
-			System.out.println("파일 불러오기 실패");
+//			System.out.println("파일 불러오기 실패");
 		}
 		return null;
 	}

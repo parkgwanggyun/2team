@@ -21,7 +21,6 @@ public class Bidder {
 			System.out.println("[경매 서버에 연결]");
 			Client client = new Client(socket, id);
 			client.start();
-//			client.send();
 		} catch (Exception e) {
 			System.out.println("[연결에 실패하였습니다.]");
 		}

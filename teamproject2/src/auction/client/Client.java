@@ -24,6 +24,7 @@ public class Client {
 	public final static String EXIT = "-quit";
 	public static Scanner scan = new Scanner(System.in);
 	public static int checkBid;
+	public static Instant finishAuction;
 	public static final int INCREMENT = 100; //최소 인상액
 	public Client(Socket socket, String id) {
 		this.id = id;
@@ -41,6 +42,7 @@ public class Client {
 			oos.flush();
 			Item item =	(Item)ois.readObject();
 			Instant finish = (Instant)ois.readObject();
+			finishAuction = finish;
 			checkBid = item.getPrice();
 			ZonedDateTime  auctionFinish = finish.atZone(ZoneId.of("Asia/Seoul"));
 			System.out.println("진행중인 경매 [물품명: " + item.getName() 
@@ -63,7 +65,8 @@ public class Client {
 		switch (menu) {
 		case 1 : 
 			send();
-			receive();
+			receiveItem();
+			auctionTimer();
 			break;
 		case 2 :
 			break;
@@ -73,7 +76,23 @@ public class Client {
 		}
 	}
 	
-	public void receive() {
+	public void auctionTimer() {
+		Thread t = new Thread(()->{
+			int count = 10;
+			while(true) {
+				if(finishAuction.minusSeconds(count).isBefore(Instant.now())) {
+					System.out.println("경매 종료까지 " + count + "초 남았습니다.");
+					count--;
+				}
+				if(count == 0) {
+					break;
+				}
+			}
+		});
+		t.start();
+	}
+	
+	public void receiveItem() {
 		Thread t = new Thread(()->{
 			try {
 				Item item;
@@ -92,7 +111,9 @@ public class Client {
 					}
 					
 				}
-			} catch (IOException e) {
+				item = (Item)ois.readObject();
+				System.out.println(item.getBidder() + "님 낙찰 축하합니다.");
+			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		});
