@@ -78,8 +78,15 @@ public class Client {
 	
 	public void auctionTimer() {
 		Thread t = new Thread(()->{
-			if(finishAuction.minusMillis(10000).isAfter(Instant.now())) {
-				System.out.println("경매 종료까지 10초 남았습니다.");
+			int count = 10;
+			while(true) {
+				if(finishAuction.minusSeconds(count).isBefore(Instant.now())) {
+					System.out.println("경매 종료까지 " + count + "초 남았습니다.");
+					count--;
+				}
+				if(count == 0) {
+					break;
+				}
 			}
 		});
 		t.start();
@@ -104,7 +111,9 @@ public class Client {
 					}
 					
 				}
-			} catch (IOException e) {
+				item = (Item)ois.readObject();
+				System.out.println(item.getBidder() + "님 낙찰 축하합니다.");
+			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		});
