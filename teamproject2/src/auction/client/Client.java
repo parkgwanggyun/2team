@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class Client {
-	
+
 	private Socket socket;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
@@ -35,7 +35,7 @@ public class Client {
 		} catch (Exception e) {
 		}
 	}
-	
+
 	public void start() {
 		try {
 			oos.writeUTF(id);
@@ -46,21 +46,21 @@ public class Client {
 			checkBid = item.getPrice();
 			ZonedDateTime  auctionFinish = finish.atZone(ZoneId.of("Asia/Seoul"));
 			System.out.println("진행중인 경매 [물품명: " + item.getName() 
-							 + ", 시작가: " + item.getPriceWon() + ", 종료 시간: " 
-						 	 + auctionFinish.format(DateTimeFormatter.ofPattern("HH시 mm분 ss초")) + "]");
+			+ ", 시작가: " + item.getPriceWon() + ", 종료 시간: " 
+			+ auctionFinish.format(DateTimeFormatter.ofPattern("HH시 mm분 ss초")) + "]");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		int menu;
-			System.out.println("1. 경매 참가");
-			System.out.println("2. 종료");
-			System.out.print("메뉴 선택 : ");
-			menu = nextInt();
-			runMenu(menu);
+		System.out.println("1. 경매 참가");
+		System.out.println("2. 종료");
+		System.out.print("메뉴 선택 : ");
+		menu = nextInt();
+		runMenu(menu);
 	}
-	
+
 	public void runMenu(int menu) {
 		switch (menu) {
 		case 1 : 
@@ -72,10 +72,10 @@ public class Client {
 			break;
 		default :
 			System.out.println("잘못된 메뉴 입니다.");
-			
+
 		}
 	}
-	
+
 	public void auctionTimer() {
 		Thread t = new Thread(()->{
 			int count = 10;
@@ -91,7 +91,7 @@ public class Client {
 		});
 		t.start();
 	}
-	
+
 	public void receiveItem() {
 		Thread t = new Thread(()->{
 			try {
@@ -109,7 +109,7 @@ public class Client {
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					}
-					
+
 				}
 				item = (Item)ois.readObject();
 				if(item != null) {
@@ -121,7 +121,7 @@ public class Client {
 		});
 		t.start();
 	}
-	
+
 	//문자열을 입력해서 소켓으로 전송하는 쓰레드를 생성하고 실행하는 메소드
 	public void send() {
 		Thread t = new Thread(()->{
@@ -129,18 +129,23 @@ public class Client {
 				while(true){
 					System.out.print("희망 입찰가 입력: ");
 					String str = scan.next();
-					
+
 					if(str.equals(EXIT)) {
 						break;
 					}
-					int bid = Integer.parseInt(str);
-					if(bid < (checkBid + INCREMENT)) { //입찰시 증가되는 최소 인상액을 더해서 현 가격과 비교
-						System.out.println("이 가격으론 입찰이 불가합니다. ("+(checkBid + INCREMENT)+")");
-						continue;
-					} else {
-						oos.writeUTF(id);
-						oos.writeUTF(str);
-						oos.flush();
+					try {
+						int bid = Integer.parseInt(str);
+
+						if(bid < (checkBid + INCREMENT)) { //입찰시 증가되는 최소 인상액을 더해서 현 가격과 비교
+							System.out.println("이 가격으론 입찰이 불가합니다. ("+(checkBid + INCREMENT)+")");
+							continue;
+						} else {
+							oos.writeUTF(id);
+							oos.writeUTF(str);
+							oos.flush();
+						}
+					} catch (NumberFormatException e) {
+						System.out.println("금액을 숫자로 입력해주세요.");
 					}
 				}
 			} catch (IOException e) {
@@ -149,7 +154,7 @@ public class Client {
 		});
 		t.start();
 	}
-	
+
 	//정수 말고 다른거 입력했을 때 예외 처리
 	public int nextInt() {
 		try {
