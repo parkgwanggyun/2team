@@ -53,7 +53,7 @@ public class Auctioneer {
 				Socket socket = serverSocket.accept();
 				Server server = new Server(list, socket);
 				server.receive(item, finish);
-				server.timer(finish);
+//				server.timer(finish);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

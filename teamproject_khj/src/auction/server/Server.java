@@ -74,6 +74,9 @@ public class Server {
 	}
 
 	public void receive(Item item, Instant finish) {
+		if(list.size() == 1) {
+			timer(finish);
+		}
 		Thread thread = new Thread(()->{
 			String id = "";
 			try {
