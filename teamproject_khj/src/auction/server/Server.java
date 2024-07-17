@@ -31,7 +31,7 @@ public class Server {
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 	public final static String EXIT = "-quit";
-	private Item highestBid = null;
+	private static Item highestBid = null;
 	private File file = new File("src/auction/server/itemData.txt");
 	public static Scanner scan = new Scanner(System.in);
 
@@ -74,18 +74,20 @@ public class Server {
 	}
 
 	public void receive(Item item, Instant finish) {
-		timer(finish);
 		Thread thread = new Thread(()->{
 			String id = "";
 			try {
 				id = ois.readUTF();
-				System.out.println("[ "+ id + "님 입장 ]");
-				oos.writeObject(item);
-				oos.writeObject(finish); 
+				if(socket.isConnected()) {
+					System.out.print("[ "+ id + "님 입장 ] 참여인원: " + list.size());
+					System.out.println(" [" + socket.getLocalAddress() + " : " + socket.getPort() + "에서 접속]");
+				}	
+				oos.writeObject(item); // 시작가 경매품
+				oos.writeObject(finish); // 경매종료 시간
+				oos.writeObject(Server.highestBid); // 나중에 접속한 사람도 이전 최고 입찰가가 얼만지 알기 위해
 				oos.flush();
 				//				System.out.println("경매정보 전송");
-				//				System.out.println(finish); //test
-				while(true) { // true 대신 경매 시간 비교식 넣으면 될듯
+				while(true) {
 					id = ois.readUTF();
 					String str = ois.readUTF();
 					if(finish.isAfter(Instant.now())) {
@@ -93,7 +95,7 @@ public class Server {
 						System.out.println("[" + id + "님 " + str + "원 입찰]");
 						//최고입찰가와 입찰자를 아이템 등록
 						Item updateBid = new Item(item.getName(), price, id);
-						highestBid = updateBid;
+						Server.highestBid = updateBid;
 						//메세지를 보낸 소켓을 제외한 다른 소켓에 메세지를 전송
 						sendAll(updateBid);
 					} else {
@@ -101,10 +103,12 @@ public class Server {
 						sendAll(close);
 					}
 				}
-				//				
-
 			} catch (IOException e) {
-				System.out.println("[ "+id + "님 퇴장 ]");
+				
+			} finally {
+				list.remove(oos);
+				System.out.println("[ "+id + "님 퇴장 ] 참여인원: " + list.size());
+				
 			}
 		});
 		thread.start();

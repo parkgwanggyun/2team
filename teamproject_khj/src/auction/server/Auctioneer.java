@@ -51,12 +51,9 @@ public class Auctioneer {
 			System.out.println("<< 경매 서버 오픈 >>");
 			while(true) {
 				Socket socket = serverSocket.accept();
-				if(socket.isConnected()) {
-					System.out.println("[" + socket.getLocalAddress() + " : " + socket.getPort() + "에서 접속]");
-				}				
 				Server server = new Server(list, socket);
-//				server.timer(finish);
 				server.receive(item, finish);
+				server.timer(finish);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

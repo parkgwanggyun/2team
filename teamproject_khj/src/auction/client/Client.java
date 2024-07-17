@@ -24,6 +24,7 @@ public class Client {
 	public final static String EXIT = "-quit";
 	public static Scanner scan = new Scanner(System.in);
 	public static int checkBid;
+	public static Item highestBidder;
 	public static Instant finishAuction;
 	public static final int INCREMENT = 100; //최소 인상액
 	public Client(Socket socket, String id) {
@@ -42,8 +43,15 @@ public class Client {
 			oos.flush();
 			Item item =	(Item)ois.readObject();
 			Instant finish = (Instant)ois.readObject();
+			Item highestBid = (Item)ois.readObject();
+			highestBidder = highestBid;
+			if(highestBid == null) {
+				checkBid = item.getPrice();
+			} else {
+				checkBid = highestBid.getPrice();
+			}
+			
 			finishAuction = finish;
-			checkBid = item.getPrice();
 			ZonedDateTime  auctionFinish = finish.atZone(ZoneId.of("Asia/Seoul"));
 			System.out.println("진행중인 경매 [물품명: " + item.getName() 
 			+ ", 시작가: " + item.getPriceWon() + ", 종료 시간: " 
@@ -137,7 +145,8 @@ public class Client {
 						int bid = Integer.parseInt(str);
 
 						if(bid < (checkBid + INCREMENT)) { //입찰시 증가되는 최소 인상액을 더해서 현 가격과 비교
-							System.out.println("이 가격으론 입찰이 불가합니다. ("+(checkBid + INCREMENT)+")");
+							System.out.println("이 가격으론 입찰이 불가합니다. (최고입찰가: "
+									+highestBidder.getPriceWon()+" | "+highestBidder.getBidder()+")");
 							continue;
 						} else {
 							oos.writeUTF(id);
