@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class Client {
-	
 	private Socket socket;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
@@ -26,6 +25,7 @@ public class Client {
 	public static int checkBid;
 	public static Instant finishAuction;
 	public static final int INCREMENT = 100; //최소 인상액
+	
 	public Client(Socket socket, String id) {
 		this.id = id;
 		this.socket = socket;
