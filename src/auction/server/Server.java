@@ -8,9 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.InputMismatchException;
@@ -35,7 +32,18 @@ public class Server {
 	private File file = new File("src/auction/server/itemData.txt");
 	public static Scanner scan = new Scanner(System.in);
 
-	public Server(List<ObjectOutputStream> list, Socket socket) {
+	private static Server server;
+	
+	public static Server getServer(List<ObjectOutputStream> list, Socket socket) {
+		if (server == null)
+			server = new Server(list, socket);
+		
+		synchronized (server) {
+			return server;	
+		}
+	}
+	
+	private Server(List<ObjectOutputStream> list, Socket socket) {
 		this.list = list;
 		this.socket = socket;
 		try { // Server 객체 생성시 input, output 스트림도 같이 생성해줌

@@ -53,12 +53,21 @@ public class Client {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		int menu;
-			System.out.println("1. 경매 참가");
-			System.out.println("2. 종료");
-			System.out.print("메뉴 선택 : ");
-			menu = nextInt();
-			runMenu(menu);
+		
+		int menu = 0;
+		
+		System.out.println("1. 경매 참가");
+		System.out.println("2. 종료");
+		System.out.print("메뉴 선택 : ");
+
+		try {
+			menu = scan.nextInt();
+		} catch (InputMismatchException e) {
+			scan.nextLine();
+			menu = Integer.MIN_VALUE;
+		}
+		
+		runMenu(menu);
 	}
 	
 	public void runMenu(int menu) {
@@ -130,9 +139,8 @@ public class Client {
 					System.out.print("희망 입찰가 입력: ");
 					String str = scan.next();
 					
-					if(str.equals(EXIT)) {
-						break;
-					}
+					if(str.equals(EXIT)) break;
+					
 					int bid = Integer.parseInt(str);
 					if(bid < (checkBid + INCREMENT)) { //입찰시 증가되는 최소 인상액을 더해서 현 가격과 비교
 						System.out.println("이 가격으론 입찰이 불가합니다. ("+(checkBid + INCREMENT)+")");
