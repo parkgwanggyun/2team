@@ -9,9 +9,11 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
-import auction.Item;
+import auction.controller.ItemController;
+import auction.vo.Item;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -20,11 +22,12 @@ public class Client {
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	private String id;
-	public final static String EXIT = "-quit";
 	public static Scanner scan = new Scanner(System.in);
+	public final static String EXIT = "-quit";
 	public static int checkBid;
 	public static Instant finishAuction;
 	public static final int INCREMENT = 100; //최소 인상액
+	private ItemController itemController = new ItemController(scan);
 	
 	public Client(Socket socket, String id) {
 		this.id = id;
@@ -37,15 +40,23 @@ public class Client {
 	}
 	
 	public void start() {
+		System.out.println("시작");
 		try {
 			oos.writeUTF(id);
 			oos.flush();
-			Item item =	(Item)ois.readObject();
+			List<Item> tmpList = itemController.getItemList();
+			Item item =	tmpList.get(tmpList.size() - 1);
+			
+			if (item == null) {
+				System.out.println("진행 중인 경매가 없습니다");
+				return;
+			}
+			
 			Instant finish = (Instant)ois.readObject();
 			finishAuction = finish;
-			checkBid = item.getPrice();
+			checkBid = item.getIt_start_price();
 			ZonedDateTime  auctionFinish = finish.atZone(ZoneId.of("Asia/Seoul"));
-			System.out.println("진행중인 경매 [물품명: " + item.getName() 
+			System.out.println("진행중인 경매 [물품명: " + item.getIt_name() 
 							 + ", 시작가: " + item.getPriceWon() + ", 종료 시간: " 
 						 	 + auctionFinish.format(DateTimeFormatter.ofPattern("HH시 mm분 ss초")) + "]");
 		} catch (ClassNotFoundException e) {
@@ -113,7 +124,7 @@ public class Client {
 							break;
 						}else {
 							System.out.println(item);
-							checkBid = item.getPrice();
+							checkBid = item.getIt_start_price();
 						}
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
@@ -122,7 +133,7 @@ public class Client {
 				}
 				item = (Item)ois.readObject();
 				if(item != null) {
-					System.out.println(item.getBidder() + "님 낙찰 축하합니다.");
+					System.out.println(item.getIt_winning_bid() + "님 낙찰 축하합니다.");
 				}
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
@@ -136,6 +147,7 @@ public class Client {
 		Thread t = new Thread(()->{
 			try {
 				while(true){
+					scan.nextLine();
 					System.out.print("희망 입찰가 입력: ");
 					String str = scan.next();
 					
@@ -156,15 +168,5 @@ public class Client {
 			}
 		});
 		t.start();
-	}
-	
-	//정수 말고 다른거 입력했을 때 예외 처리
-	public int nextInt() {
-		try {
-			return scan.nextInt();
-		} catch (InputMismatchException e) {
-			scan.nextLine();
-			return Integer.MIN_VALUE;
-		}
 	}
 }

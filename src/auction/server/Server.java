@@ -1,8 +1,5 @@
 package auction.server;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,36 +11,25 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-import auction.Item;
+import auction.controller.ItemController;
+import auction.vo.Item;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
 public class Server {
-
+	private Scanner sc = new Scanner(System.in);
+	private ItemController itemController = new ItemController(sc);
+	
 	private List<ObjectOutputStream> list = Collections.synchronizedList(new ArrayList<ObjectOutputStream>());
-//	private List<Item> itemList = Collections.synchronizedList(new ArrayList<Item>());
 	private Socket socket;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 	public final static String EXIT = "-quit";
 	private Item highestBid = null;
-	private File file = new File("src/auction/server/itemData.txt");
-	public static Scanner scan = new Scanner(System.in);
-
-	private static Server server;
 	
-	public static Server getServer(List<ObjectOutputStream> list, Socket socket) {
-		if (server == null)
-			server = new Server(list, socket);
-		
-		synchronized (server) {
-			return server;	
-		}
-	}
-	
-	private Server(List<ObjectOutputStream> list, Socket socket) {
+	public Server(List<ObjectOutputStream> list, Socket socket) {
 		this.list = list;
 		this.socket = socket;
 		try { // Server 객체 생성시 input, output 스트림도 같이 생성해줌
@@ -59,7 +45,7 @@ public class Server {
 			//			} catch (Exception e) {
 			//				System.out.println("파일 저장 실패");
 			//			}
-			loadItemList(file);
+			itemController.loadItemList();
 
 		} catch (Exception e) {
 		}
@@ -74,8 +60,9 @@ public class Server {
 			System.out.println("[ 경매 종료 ]");
 			Item close = null;
 			sendAll(close);			
+			
 			Auctioneer.itemList.add(highestBid);
-			saveItemList(file);
+			itemController.saveItemList();
 			sendAll(highestBid);
 		});
 		thread.start();
@@ -91,8 +78,8 @@ public class Server {
 				oos.writeObject(item);
 				oos.writeObject(finish); 
 				oos.flush();
-				//				System.out.println("경매정보 전송");
-				//				System.out.println(finish); //test
+								System.out.println("경매정보 전송");
+								System.out.println(finish); //test
 				while(true) { // true 대신 경매 시간 비교식 넣으면 될듯
 					id = ois.readUTF();
 					String str = ois.readUTF();
@@ -100,7 +87,7 @@ public class Server {
 						int price = Integer.parseInt(str);
 						System.out.println("[" + id + "님 " + str + "원 입찰]");
 						//최고입찰가와 입찰자를 아이템 등록
-						Item updateBid = new Item(item.getName(), price, id);
+						Item updateBid = new Item(item.getIt_name(), price, id);
 						highestBid = updateBid;
 						//메세지를 보낸 소켓을 제외한 다른 소켓에 메세지를 전송
 						sendAll(updateBid);
@@ -131,35 +118,14 @@ public class Server {
 			//			}
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	private void loadItemList(File file) {
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))){
-			Auctioneer.itemList = (List<Item>)ois.readObject();
-		} catch (Exception e) {
-			System.out.println("파일 불러오기 실패");
-		}
-	}
-
-	private void saveItemList(File file) {
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
-			oos.writeObject(Auctioneer.itemList);
-			oos.close();
-		} catch (Exception e) {
-			System.out.println("파일 저장 실패");
-		}
-	}
+	
 	//정수 말고 다른거 입력했을 때 예외 처리
 	public int nextInt() {
 		try {
-			return scan.nextInt();
+			return sc.nextInt();
 		} catch (InputMismatchException e) {
-			scan.nextLine();
+			sc.nextLine();
 			return Integer.MIN_VALUE;
 		}
 	}
-
 }
-
-

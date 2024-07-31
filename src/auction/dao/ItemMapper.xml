@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="auction.dao.ItemDAO">
+	<select id="selectItem" resultType="Item">
+		select * from item where it_name = #{name}
+	</select>
+	<select id="selectItemList" resultType="Item">
+		select * from item
+	</select>
+	<insert id="insertItem">
+		insert into item(it_name, it_start_price, it_winning_bid)
+		values(#{item.it_name}, #{item.it_start_price}, #{item.it_winning_bid})
+	</insert>
+</mapper>
