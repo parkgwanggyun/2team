@@ -44,16 +44,24 @@ public class ItemController {
 		else System.out.println("[경매 물품 등록 실패]");
 	}
 	
-	public Item selectItem(String name) {
-		Item item = itemService.selectItem(name);
-		if (item == null) {
-			System.out.println("[존재하지 않는 물품]");
-			return null;
-		}
-		return item;
-	}
-
 	public List<Item> getItemList() {
 		return itemService.selectItemList();
+	}
+
+	public Item selectItem(int i) {
+		return itemService.selectItem(i);
+	}
+
+	public void startAuction(Item item) {
+		if (itemService.updateAuctionNow(item)) System.out.println("[경매 시작 준비 완료]");
+		else System.out.println("[경매 시작 준비 실패]");
+	}
+
+	public List<Item> getNowAuctionItemList() {
+		return itemService.getNowAuctionItemList();
+	}
+
+	public Item getItem(int num) {
+		return itemService.getItem(num);
 	}
 }

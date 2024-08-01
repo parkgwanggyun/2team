@@ -9,7 +9,11 @@ import auction.vo.Item;
 public interface ItemDAO {
 	boolean insertItem(@Param("item")Item item);
 
-	Item selectItem(@Param("name")String name);
-
 	List<Item> selectItemList();
+
+	Item selectItem(@Param("it_num")int num);
+
+	boolean updateAuctionNow(@Param("item")Item item);
+
+	List<Item> getNowAuctionItemList();
 }

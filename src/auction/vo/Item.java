@@ -3,8 +3,10 @@ package auction.vo;
 import java.text.DecimalFormat;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class Item {
 	private int it_num;
 	private String it_name;
@@ -24,7 +26,8 @@ public class Item {
 	
 	@Override
 	public String toString() {
-		return "진행중인 경매 [물품명: " + it_name + "] [최고입찰가: " + getPriceWon() + "] [입찰자: " + it_winning_bid + "]";
+		//return "진행중인 경매 [물품명: " + it_name + "] [최고입찰가: " + getPriceWon() + "] [입찰자: " + it_winning_bid + "]";
+		return it_num + ". " + it_name + ", 시작가: " + it_start_price;
 	}
 	
 //	public void updateBid(String id, int price) {

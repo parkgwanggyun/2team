@@ -4,3 +4,4 @@
 .settings/
 
 java_pgg/.gitignore
+/bin/

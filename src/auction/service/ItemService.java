@@ -36,11 +36,23 @@ public class ItemService {
 		return itemDao.insertItem(item);
 	}
 
-	public Item selectItem(String name) {
-		return itemDao.selectItem(name);
-	}
-
 	public List<Item> selectItemList() {
 		return itemDao.selectItemList();
+	}
+
+	public Item selectItem(int i) {
+		return itemDao.selectItem(i);
+	}
+
+	public boolean updateAuctionNow(Item item) {
+		return itemDao.updateAuctionNow(item);
+	}
+
+	public List<Item> getNowAuctionItemList() {
+		return itemDao.getNowAuctionItemList();
+	}
+
+	public Item getItem(int num) {
+		return itemDao.selectItem(num);
 	}
 }

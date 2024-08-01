@@ -42,6 +42,9 @@ public class Auctioneer {
 		try(ServerSocket serverSocket = new ServerSocket(port)) {
 			//itemList = loadItemList(file);
 			start();
+			System.out.println("현재 경매 물품");
+			System.out.println(item.getIt_num() + ". " + item.getIt_name() + " | 시작가 : " + item.getIt_start_price());
+			itemController.startAuction(item);
 			System.out.println("<< 경매 서버 오픈 >>");
 			while(true) {
 				Socket socket = serverSocket.accept();
@@ -58,6 +61,7 @@ public class Auctioneer {
 		int menu;
 		System.out.println("1. 경매 물품 등록");
 		System.out.println("2. 경매 낙찰 리스트");
+		System.out.println("3. 경매 서버 열기");
 		System.out.print("메뉴 선택 : ");
 		
 		menu = nextInt();
@@ -73,19 +77,32 @@ public class Auctioneer {
 		case 2 :
 			showItemList();
 			break;
+		case 3 :
+			openAuction();
+			break;
 		default :
 			System.out.println("잘못된 메뉴 입니다.");
 		}
 	}
 	
-	public static void addItem() {
-		item = setItem();
+	private static void openAuction() {
+		List<Item> tmpList = itemController.getItemList();
+		for (Item tmp : tmpList)
+			System.out.println(tmp.getIt_num() + ". " + tmp.getIt_name() + " | 시작가 : " + tmp.getIt_start_price());
+		System.out.print("경매 물품 번호 선택 : ");
+		int i = scan.nextInt();
+		item = itemController.selectItem(i);
+		
 		System.out.print("진행 시간(분) : ");
 		int period = (scan.nextInt() * 60);
-		itemController.insertItem(item);
 		finish = Instant.now().plusSeconds(period);
-		ZonedDateTime  auctionFinish = finish.atZone(ZoneId.of("Asia/Seoul"));
+		ZonedDateTime auctionFinish = finish.atZone(ZoneId.of("Asia/Seoul"));
 		System.out.println("종료 시간: " + auctionFinish.format(DateTimeFormatter.ofPattern("HH시 mm분 ss초")));
+	}
+
+	public static void addItem() {
+		item = setItem();
+		itemController.insertItem(item);
 	}
 	
 	public static Item setItem() {

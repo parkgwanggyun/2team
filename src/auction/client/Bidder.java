@@ -1,13 +1,18 @@
 package auction.client;
 
 import java.net.Socket;
+import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 import auction.config.Program;
+import auction.controller.ItemController;
+import auction.vo.Item;
 
 public class Bidder implements Program {
 	
-	public static Scanner sc = new Scanner(System.in);
+	private static Scanner scan = new Scanner(System.in);
+	private ItemController itemController = new ItemController(scan);
 	
 	public static void main(String[] args) {
 		Bidder bidder = new Bidder();
@@ -47,7 +52,7 @@ public class Bidder implements Program {
 		int menu = 0;
 		do {
 			printMenu();
-			menu = sc.nextInt();
+			menu = scan.nextInt();
 			try {
 				runMenu(menu);
 			} catch (Exception e) {
@@ -59,10 +64,20 @@ public class Bidder implements Program {
 	
 	public void start() {
 		System.out.print("접속할 IP와 port번호 입력 : ");
-		String ip = sc.next();
-		int port = sc.nextInt();
+		String ip = scan.next();
+		int port = scan.nextInt();
 		System.out.print("아이디 입력 : ");
-		String id = sc.next();
+		String id = scan.next();
+		
+		System.out.println("현재 경매 중인 물품");
+		List<Item> tmpList = itemController.getNowAuctionItemList();
+		
+		if (tmpList.size() == 0) {
+			System.out.println("진행 중인 경매가 없습니다");
+			return;
+		}
+		for (Item tmp : tmpList) System.out.println(tmp);
+		
 		
 		try {
 			Socket socket = new Socket(ip, port);
