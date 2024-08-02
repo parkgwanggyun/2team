@@ -27,7 +27,7 @@ public class Bidder {
 	private Scanner scan = new Scanner(System.in);
 	MemberController memberController = new MemberController(scan);
 	AuctionController auctionController = new AuctionController(scan);
-	 
+
 	public Bidder() {
 		try {
 			socket = new Socket(SERVER_IP, SERVER_PORT);
@@ -56,8 +56,11 @@ public class Bidder {
 				}
 			} else if (choice == '2') {
 				MemberVO nMem = memberController.register();
-					out.println("REGISTER::"+nMem.getMe_id()+"::"+nMem.getMe_name()+"::"
-				+ nMem.getMe_address() +"::"+ nMem.getMe_contact()); // 서버에 회원가입 알림
+				if(nMem == null) {
+					continue;
+				}
+				out.println("REGISTER::"+nMem.getMe_id()+"::"+nMem.getMe_name()+"::"
+						+ nMem.getMe_address() +"::"+ nMem.getMe_contact()); // 서버에 회원가입 알림
 			} else if (choice == '3') {
 				out.println("EXIT");
 				break;
@@ -144,7 +147,7 @@ public class Bidder {
 		System.out.println("진행중인 경매 [경매품: " + name + "][시작가: " + getFormatWon(startPrice) + "][최고입찰가: " 
 				+ getFormatWon(highestPrice) +"][종료시간: " + endTime + "][최소 입찰 가능액: " + getFormatWon(possibleMinBid) + "]");	
 	}
-	
+
 	// 세자리마다 , 넣어주는 기능
 	public String getFormatWon(int price) {
 		DecimalFormat format = new DecimalFormat("###,###,###,###");
@@ -155,6 +158,6 @@ public class Bidder {
 		DecimalFormat format = new DecimalFormat("###,###,###,###");
 		return format.format(priceInt);
 	}
-	
-	
+
+
 }

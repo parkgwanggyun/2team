@@ -28,7 +28,7 @@ public class MemberVO {
 	
 	@Override
 	public String toString() {
-		return "[" + me_id + " : " + me_password + "]  [이름: " + me_name + "]  [주소: "
+		return "[아이디:" + me_id + "]  [이름: " + me_name + "]  [주소: "
 				+ me_address + "]  [연락처: " + me_contact + "]";
 	}
 	

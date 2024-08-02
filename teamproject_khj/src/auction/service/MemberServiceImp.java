@@ -36,7 +36,7 @@ public class MemberServiceImp implements MemberService{
 		}
 		//이미 등록된 회원인지 확인		
 		String memberId = memberDao.selectMemberId(member.getMe_id());
-		System.out.println(memberId); //확인용
+//		System.out.println(memberId); //확인용
 		//등록된 회원이면
 		if(memberId != null) {
 			return false;

@@ -162,7 +162,7 @@ public class Auctioneer {
 			auctionTimer(finishAuction);
 			break;
 		case 3 :
-			//			searchAuctionDB();
+			searchAuction();
 			break;
 		case 4 :
 			//			searchBidDB();
@@ -172,6 +172,18 @@ public class Auctioneer {
 		}		
 	}
 	
+	private void searchAuction() {
+		//컨트롤에게 전체 경매기록 출력을 시킴
+//		auctionController.printAuctionList();
+		
+		// 불러온 경매기록 출력
+		
+		//검색어 입력
+		
+		//입력
+		
+	}
+
 	// 멤버 메뉴
 	private void runMemberMenu(int menu) {
 		switch (menu) {

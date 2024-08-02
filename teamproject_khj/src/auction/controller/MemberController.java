@@ -50,7 +50,7 @@ public class MemberController {
 		System.out.print("비밀번호 > ");
 		String password = scan.next();
 		if(!Pattern.matches(getRegex("password"), password)) {
-			System.out.println("[영문+숫자 4~14자 첫글자는 영문만 가능]");
+			System.out.println("[영문+숫자 4~14자]");
 			return null;
 		}
 		System.out.print("이름 > ");
@@ -148,16 +148,19 @@ public class MemberController {
 				return null;
 			}
 		}
-		// 회원 가입 요청 하는 기능
+		// 클라이언트 회원 가입 하는 기능
 		public MemberVO register() {
-			MemberVO member = inputMemberInfo();
-			if(memberService.insertMember(member)) {
-				System.out.println("[회원 가입 성공]");
-				return member;
-			} else {
-				System.out.println("[가입 실패 : 등록된 아이디]");
+				MemberVO member = inputMemberInfo();
+				if(member != null) {
+					if(memberService.insertMember(member)) {
+						System.out.println("[회원 가입 성공]");
+						return member;
+					} else {
+						System.out.println("[가입 실패 : 등록된 아이디]");
+						return null;
+					}
+				}
 				return null;
-			}
 		}
 		
 		//정규표현식 모음
@@ -166,7 +169,7 @@ public class MemberController {
 				return "^[a-zA-Z][a-zA-Z0-9]{2,11}$";
 			}
 			if(regex.equals("password")) {
-				return "^[a-zA-Z][a-zA-Z0-9]{3,13}$\"";
+				return "^[a-zA-Z0-9]{4,14}$";
 			}
 			if(regex.equals("name")) {
 				return "^([가-힣]{2,5}|[a-zA-Z]{2,10})$";
