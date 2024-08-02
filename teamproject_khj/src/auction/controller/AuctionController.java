@@ -1,9 +1,7 @@
 package auction.controller;
 
-import java.time.LocalTime;
-import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import auction.main.PresentCondition;
 import auction.model.vo.AuctionVO;
@@ -37,11 +35,59 @@ public class AuctionController {
 		int intBid = Integer.parseInt(bid);
 		return auctionService.insertBid(id, intBid);
 	}
-
+	
+	//경매가 종료되면 낙찰가와 낙찰자를 등록하는 기능
 	public void finishAuction() {
 		 if(auctionService.updateAuction()) {
-			 System.out.println("[경매기록 완료]");
+			 System.out.println("\n[경매 종료]");
 		 }
+	}
+	//전체 경매기록을 조회해서 출력하는 기능
+	public void printAuctionList() {
+		List<AuctionVO> list =	auctionService.getAuctionList();
+		if(list.size() == 0) {
+			System.out.println("경매 기록이 없습니다.");
+		}
+		System.out.println("[전체 경매기록]");
+		for(AuctionVO auction : list) {
+			System.out.println(auction);
+		}
+	}
+
+	public void searchAuctionList(String search) {
+		List<AuctionVO> list =	auctionService.getSearchAuctionList(search);
+		if(list.size() == 0) {
+			System.out.println("일치하는 경매 기록이 없습니다.");
+		}
+		System.out.println("[검색 결과]");
+		for(AuctionVO auction : list) {
+			System.out.println(auction);
+		}
+		
+	}
+
+	public void searchBidList(String search) {
+		List<BidVO> list =	auctionService.getSearchBidList(search);
+		if(list.size() == 0) {
+			System.out.println("일치하는 입찰 기록이 없습니다.");
+		}
+		System.out.println("[검색 결과]");
+		for(BidVO bid : list) {
+			System.out.println("[" + bid.getAuction().getAu_date()+"][경매품: " + bid.getAuction().getAu_name() 
+					+"][입찰가: " + bid.getBi_price() + "][입찰자ID: " + bid.getBi_me_id()+"]");
+		}
+	}
+
+	public void getBidListById(String id) {
+		List<BidVO> list =	auctionService.getSearchBidListById(id);
+		if(list.size() == 0) {
+			System.out.println("경매기록이 없습니다.");
+		}
+		System.out.println("[검색 결과]");
+		for(BidVO bid : list) {
+			System.out.println("[" + bid.getAuction().getAu_date()+"][경매품: " + bid.getAuction().getAu_name() 
+					+"][입찰가: " + bid.getBi_price() + "][입찰자ID: " + bid.getBi_me_id()+"]");
+		}
 	}
 
 }

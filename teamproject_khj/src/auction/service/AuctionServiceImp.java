@@ -2,6 +2,7 @@ package auction.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -15,7 +16,7 @@ import auction.model.vo.BidVO;
 public class AuctionServiceImp implements AuctionService{
 	
 	AuctionDAO auctionDao;
-	int au_num;
+	AuctionVO auction;
 	BidVO winBidder;
 	
 	public AuctionServiceImp() {
@@ -38,7 +39,7 @@ public class AuctionServiceImp implements AuctionService{
 			return false;
 		}
 		boolean res = auctionDao.insertAuctionStart(auction); //진행중인 경매정보를 db에 추가
-		au_num = auction.getAu_num(); // 추가된 레코드에서 경매번호 가져옴
+		this.auction = auction; // 추가된 레코드에서 경매번호 가져옴
 		return res;
 	}
 
@@ -48,12 +49,41 @@ public class AuctionServiceImp implements AuctionService{
 			return false;
 		}
 		winBidder = new BidVO(bid, id);
-		return auctionDao.insertBid(au_num, id, bid);
+		return auctionDao.insertBid(auction.getAu_num(), id, bid);
 	}
 
 	@Override
 	public boolean updateAuction() {
 		
-		return auctionDao.updateAuction(au_num, winBidder);
+		return auctionDao.updateAuction(auction.getAu_num(), winBidder);
+	}
+
+	@Override
+	public List<AuctionVO> getAuctionList() {
+		return auctionDao.selectAuctionList();
+	}
+
+	@Override
+	public List<AuctionVO> getSearchAuctionList(String search) {
+		if(search == null) {
+			return null;
+		}
+		return auctionDao.selectSearchAuctionList(search);
+	}
+
+	@Override
+	public List<BidVO> getSearchBidList(String search) {
+		if(search == null) {
+			return null;
+		}
+		return auctionDao.getBidWithAuction(search);
+	}
+
+	@Override
+	public List<BidVO> getSearchBidListById(String id) {
+		if(id == null) {
+			return null;
+		}
+		return auctionDao.getBidWithAuctionById(id);
 	}
 }

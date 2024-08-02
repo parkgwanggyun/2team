@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import auction.controller.AuctionController;
 import auction.controller.MemberController;
+import auction.controller.PrintController;
 import auction.model.vo.MemberVO;
 
 
@@ -92,6 +93,10 @@ public class Bidder {
 				}
 
 			} else if (choice == '2') {
+				System.out.print("아이디 입력 > ");
+				String id = scan.next();
+				auctionController.getBidListById(id);
+				PrintController.bar();
 			} else if (choice == '3') {
 				break;
 			} else {
@@ -145,7 +150,7 @@ public class Bidder {
 		int incrementInt = Integer.parseInt(increment);		
 		possibleMinBid = highestPriceInt + incrementInt; // 입찰 가능 금액
 		System.out.println("진행중인 경매 [경매품: " + name + "][시작가: " + getFormatWon(startPrice) + "][최고입찰가: " 
-				+ getFormatWon(highestPrice) +"][종료시간: " + endTime + "][최소 입찰 가능액: " + getFormatWon(possibleMinBid) + "]");	
+				+ getFormatWon(highestPrice) +"][종료시간: " + endTime + "]\n최소 입찰 가능액: " + getFormatWon(possibleMinBid) + ">");	
 	}
 
 	// 세자리마다 , 넣어주는 기능

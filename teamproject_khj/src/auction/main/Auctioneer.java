@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 import auction.controller.AuctionController;
 import auction.controller.MemberController;
-import auction.model.vo.BidVO;
+import auction.controller.PrintController;
 import auction.model.vo.MemberVO;
 
 /* 1. 회원정보 관리
@@ -68,6 +68,22 @@ public class Auctioneer {
 		
 	}
 
+	// 
+	class RunMainMenu extends Thread{
+		public void run() {
+			int menu = 0;
+			do {
+				System.out.println("1. 회원 관리");
+				System.out.println("2. 경매 관리");
+				System.out.println("3. 종료");
+				System.out.print("메뉴 선택 : ");
+
+				menu = nextInt();
+				runMenu(menu);
+
+			} while(menu != 3);
+		}
+	}
 
 	public void runMenu(int menu)  {
 		switch (menu) {
@@ -165,23 +181,53 @@ public class Auctioneer {
 			searchAuction();
 			break;
 		case 4 :
-			//			searchBidDB();
+			searchBid();
+			break;
+		case 5 :
 			break;
 		default :
 			System.out.println("잘못된 메뉴 입니다.");
 		}		
 	}
 	
+	private void searchBid() {
+		System.out.print("검색어 입력 >");
+		String search = scan.next();		
+		//검색된 입찰기록 출력
+		auctionController.searchBidList(search);
+		PrintController.bar();
+	}
+
 	private void searchAuction() {
 		//컨트롤에게 전체 경매기록 출력을 시킴
-//		auctionController.printAuctionList();
-		
-		// 불러온 경매기록 출력
-		
+		PrintController.bar();
+		auctionController.printAuctionList();
+		PrintController.bar();
 		//검색어 입력
-		
-		//입력
-		
+		int menu = -1;
+		do {
+			System.out.println("1. 검색");
+			System.out.println("2. 이전");
+			menu= scan.nextInt();
+			runSearchMenu(menu);
+		}while(menu != 2);
+	}
+	private void runSearchMenu(int menu) {
+		switch(menu) {
+		case 1:
+			System.out.print(">");
+			SearchAuction();
+			break;
+		case 2:
+			break;
+		}
+	}
+	
+	private void SearchAuction() {
+		String search = scan.next();		
+		//검색된 경매기록 출력
+		auctionController.searchAuctionList(search);
+		PrintController.bar();
 	}
 
 	// 멤버 메뉴
@@ -198,6 +244,8 @@ public class Auctioneer {
 			break;
 		case 4 :
 			memberController.searchMember();
+			break;
+		case 5 :
 			break;
 		default :
 			System.out.println("잘못된 메뉴 입니다.");
@@ -250,25 +298,6 @@ public class Auctioneer {
 			return null;
 		}
 	}
-
-
-	// 
-	class RunMainMenu extends Thread{
-		public void run() {
-			int menu = 0;
-			do {
-				System.out.println("1. 회원 관리");
-				System.out.println("2. 경매 관리");
-				System.out.println("3. 종료");
-				System.out.print("메뉴 선택 : ");
-
-				menu = nextInt();
-				runMenu(menu);
-
-			} while(menu != 3);
-		}
-	}
-
 
 	// 클라이언트 요청 처리를 담당하는 쓰레드
 	class ClientHandler extends Thread {
