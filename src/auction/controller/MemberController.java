@@ -162,10 +162,10 @@ public class MemberController {
 		//정규표현식 모음
 		private String getRegex(String regex) {
 			if(regex.equals("id")) {
-				return "^[a-zA-Z][a-zA-Z0-9]{3,12}$";
+				return "^[a-zA-Z][a-zA-Z0-9]{2,12}$";
 			}
 			if(regex.equals("password")) {
-				return "^[a-zA-Z][a-zA-Z0-9]{4,14}$";
+				return "^[a-zA-Z][a-zA-Z0-9]{3,14}$";
 			}
 			if(regex.equals("name")) {
 				return "^([가-힣]{2,5}|[a-zA-Z]{2,10})$";
