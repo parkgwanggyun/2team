@@ -93,10 +93,8 @@ public class Bidder {
 					System.out.println("진행중인 경매가 없습니다.");
 				}
 
-			} else if (choice == '2') {
-				System.out.print("아이디 입력 > ");
-				String id = scan.next();
-				auctionController.getBidListById(id);
+			} else if (choice == '2') {				
+				auctionController.getBidListById(member.getMe_id());
 				PrintController.bar();
 			} else if (choice == '3') {	
 				Bdding = false;

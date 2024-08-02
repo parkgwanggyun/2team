@@ -119,12 +119,12 @@ public class MemberController {
 		System.out.println("검색할 회원 정보 입력 >");
 		scan.nextLine();
 		String searchMemberInfo = scan.nextLine();
-		//수정하려는 학생이 있는지 없는지 확인
 		ArrayList<MemberVO> searchList = memberService.searchMemberList(searchMemberInfo);
-		if(searchList == null) {
+		if(searchList.size() == 0) {
 			System.out.println("[검색 실패 : 일치하는 회원 정보 없음]");
 			return;
 		}
+		System.out.println("<'"+searchMemberInfo+ "' 검색 결과>");
 		for(MemberVO member : searchList) {
 			System.out.println(member);
 		}

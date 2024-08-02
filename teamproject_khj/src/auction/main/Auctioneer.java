@@ -58,7 +58,13 @@ public class Auctioneer {
 				Socket clientSocket = serverSocket.accept();
 				if(clientSocket.isConnected()) {
 					System.out.println("[" + clientSocket + "에서 접속]");
-				}				
+				}	
+				String client = clientSocket.getLocalSocketAddress().toString();
+				String host = InetAddress.getLocalHost().getHostAddress().toString();
+				if(client.substring(0, 10).equals("/127.0.0.1")) {
+					System.out.println("확인");
+					break;
+				}
 				ClientHandler clientHandler = new ClientHandler(clientSocket);
 				clientHandler.start();
 			}
@@ -67,7 +73,6 @@ public class Auctioneer {
 		} 
 		
 	}
-
 	// 
 	class RunMainMenu extends Thread{
 		public void run() {
@@ -94,7 +99,10 @@ public class Auctioneer {
 			auctionMenuList();
 			break;
 		case 3 :
-
+			try {
+				Socket socket = new Socket("localhost", 6006);
+			} catch (Exception e) {
+			}
 			System.out.println("[프로그램 종료]");
 			break;
 		default :
