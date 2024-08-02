@@ -23,7 +23,5 @@ public class AuctionVO {
 		return "[" + au_num + "][" + au_date + "][경매품: " + au_name + "][시작가: "
 				+ au_start_price + "][낙찰가: " + au_winning_bid + "][낙찰자ID: " + au_me_id + "]";
 	}
-		
-	
 	
 }
