@@ -368,7 +368,8 @@ public class Auctioneer {
 			String name = parts[2];
 			String address = parts[3];
 			String contact = parts[4];
-			MemberVO member = new MemberVO(id, name, address, contact);
+			System.out.println("아이디확인" + id);
+			MemberVO member = new MemberVO(id, "", name, address, contact);
 			System.out.println("[신규회원 가입] ");
 			System.out.println(member);
 		}

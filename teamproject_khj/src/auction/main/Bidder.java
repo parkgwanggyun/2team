@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.text.DecimalFormat;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import auction.controller.AuctionController;
 import auction.controller.MemberController;
@@ -25,6 +24,7 @@ public class Bidder {
 	MemberVO member = null;
 	int possibleMinBid; 
 	boolean auctionState = false;
+	boolean Bdding = false;
 	private Scanner scan = new Scanner(System.in);
 	MemberController memberController = new MemberController(scan);
 	AuctionController auctionController = new AuctionController(scan);
@@ -40,7 +40,7 @@ public class Bidder {
 			e.printStackTrace();
 		}
 	}
-	public void start() throws IOException {       
+	public void start() {       
 		while (true) {
 			System.out.println("1. 로그인");
 			System.out.println("2. 회원가입");
@@ -52,6 +52,7 @@ public class Bidder {
 				member = memberController.logIn();
 				if(member != null) {
 					out.println("LOGIN::"+ member.getMe_id()); // 서버에 로그인 알림
+					Bdding = true;
 					bidderReceiver();
 					bidStart();
 				}
@@ -97,7 +98,8 @@ public class Bidder {
 				String id = scan.next();
 				auctionController.getBidListById(id);
 				PrintController.bar();
-			} else if (choice == '3') {
+			} else if (choice == '3') {	
+				Bdding = false;
 				break;
 			} else {
 				System.out.println("잘못된 선택입니다.");
@@ -108,27 +110,32 @@ public class Bidder {
 	// 경매현황 수신
 	private void bidderReceiver() {
 		Thread thread = new Thread(()->{
-			while(true) {
+			while(Bdding) {
 				try {
 					synchronized(in) {
-						String response = in.readLine();
-						if (response.startsWith("PRESENT_CONDITION")) {
-							auctionState = true;
-							System.out.println("[입찰 성공]");
-							printAuctionPc(response);
-						} else if (response.startsWith("FINISH")) {
-							String[] parts = response.split("::");
-							String notify = parts[1];
-							System.out.println(notify);
-							break;
-						} else if(response.startsWith("AUCTION_OFF")) {
-							auctionState = false;
-							String[] parts = response.split("::");
-							String notify = parts[1];
-							System.out.println(notify);
-						} else {
-							System.out.println(response);
+						String response;
+						try {
+							response = in.readLine();
+							if (response.startsWith("PRESENT_CONDITION")) {
+								auctionState = true;
+								System.out.println("[입찰 성공]");
+								printAuctionPc(response);
+							} else if (response.startsWith("FINISH")) {
+								String[] parts = response.split("::");
+								String notify = parts[1];
+								System.out.println(notify);
+								break;
+							} else if(response.startsWith("AUCTION_OFF")) {
+								auctionState = false;
+								String[] parts = response.split("::");
+								String notify = parts[1];
+								System.out.println(notify);
+							} else {
+								System.out.println(response);
+							}
+						}catch(NullPointerException e) {
 						}
+						
 
 					}
 				} catch (IOException e) {
