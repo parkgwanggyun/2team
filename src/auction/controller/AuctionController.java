@@ -1,13 +1,10 @@
 package auction.controller;
 
-import java.time.LocalTime;
-import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import auction.main.PresentCondition;
 import auction.model.vo.AuctionVO;
-import auction.model.vo.BidVO;
 import auction.service.AuctionService;
 import auction.service.AuctionServiceImp;
 
@@ -42,6 +39,10 @@ public class AuctionController {
 		 if(auctionService.updateAuction()) {
 			 System.out.println("[경매기록 완료]");
 		 }
+	}
+
+	public List<AuctionVO> getAuctionList(String me_id) {
+		return auctionService.getAuctionList(me_id);
 	}
 
 }

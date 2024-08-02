@@ -12,8 +12,6 @@ public interface MemberDAO {
 
 	boolean insertMember(@Param("member")MemberVO member);
 
-	String selectMemberId(@Param("memberId")String memberId);
-
 	MemberVO selectMemberById(@Param("memberId")String memberId);
 
 	boolean updateMember(@Param("newMember")MemberVO newMember);

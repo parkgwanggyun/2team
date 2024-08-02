@@ -2,6 +2,7 @@ package auction.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -55,5 +56,10 @@ public class AuctionServiceImp implements AuctionService{
 	public boolean updateAuction() {
 		
 		return auctionDao.updateAuction(au_num, winBidder);
+	}
+
+	@Override
+	public List<AuctionVO> getAuctionList(String me_id) {
+		return auctionDao.selectAuctionList(me_id);
 	}
 }

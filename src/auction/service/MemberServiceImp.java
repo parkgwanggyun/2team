@@ -35,10 +35,10 @@ public class MemberServiceImp implements MemberService{
 			return false;
 		}
 		//이미 등록된 회원인지 확인		
-		String memberId = memberDao.selectMemberId(member.getMe_id());
-		System.out.println(memberId); //확인용
+		MemberVO dbMember = memberDao.selectMemberById(member.getMe_id());
 		//등록된 회원이면
-		if(memberId != null) {
+		if(dbMember != null) {
+			System.out.println(dbMember.getMe_id() + " : 이미 등록된 회원"); //확인용
 			return false;
 		}
 		return memberDao.insertMember(member);
@@ -48,10 +48,10 @@ public class MemberServiceImp implements MemberService{
 		if(memberId == null) {
 			return false;
 		}
-		String dbMemberId = memberDao.selectMemberId(memberId);
+		MemberVO dbMember = memberDao.selectMemberById(memberId);
 //		System.out.println(dbMemberId); //확인용
 		//등록되지 않은 아이디이면 false 반환
-		return dbMemberId != null;
+		return dbMember != null;
 	}
 	// 회원 수정
 	public boolean updateMember(String memberId, MemberVO newMember) {

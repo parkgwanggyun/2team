@@ -1,6 +1,5 @@
 package auction.controller;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -67,7 +66,7 @@ public class MemberController {
 			return null;
 		}
 		System.out.print("전화번호 > ");
-		String contact = scan.next();;
+		String contact = scan.next();
 		if(!Pattern.matches(getRegex("contact"), contact)) {
 			System.out.println("[전화번호 형식이 잘못됨]");
 			return null;
@@ -163,10 +162,10 @@ public class MemberController {
 		//정규표현식 모음
 		private String getRegex(String regex) {
 			if(regex.equals("id")) {
-				return "^[a-zA-Z][a-zA-Z0-9]{2,11}$";
+				return "^[a-zA-Z][a-zA-Z0-9]{3,12}$";
 			}
 			if(regex.equals("password")) {
-				return "^[a-zA-Z][a-zA-Z0-9]{3,13}$\"";
+				return "^[a-zA-Z][a-zA-Z0-9]{4,14}$";
 			}
 			if(regex.equals("name")) {
 				return "^([가-힣]{2,5}|[a-zA-Z]{2,10})$";

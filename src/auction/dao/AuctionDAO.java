@@ -1,6 +1,8 @@
 package auction.dao;
 
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import auction.model.vo.AuctionVO;
@@ -13,5 +15,7 @@ public interface AuctionDAO {
 	boolean insertBid(@Param("bi_au_num")int au_num, @Param("bi_me_id")String id, @Param("bi_price")int bid);
 
 	boolean updateAuction(@Param("au_num")int au_num, @Param("wb")BidVO winBidder);
+
+	List<AuctionVO> selectAuctionList(@Param("me_id")String me_id);
 
 }

@@ -338,7 +338,7 @@ public class Auctioneer {
 			String[] parts = request.split("::");
 			String id = parts[1];
 			logId = id;
-			System.out.println("[로그인 > "+ id);			
+			System.out.println("[로그인 > " + id + "]");			
 			if(auctionState) {
 				sendOne(presentCondition);
 			} else {

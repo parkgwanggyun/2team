@@ -6,11 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import auction.controller.AuctionController;
 import auction.controller.MemberController;
+import auction.model.vo.AuctionVO;
 import auction.model.vo.MemberVO;
 
 
@@ -39,12 +40,17 @@ public class Bidder {
 			e.printStackTrace();
 		}
 	}
-	public void start() throws IOException {       
+	
+	public void printMenu() {
+		System.out.println("1. 로그인");
+		System.out.println("2. 회원가입");
+		System.out.println("3. 종료");
+		System.out.print("선택: ");
+	}
+	
+	public void start() throws IOException {
 		while (true) {
-			System.out.println("1. 로그인");
-			System.out.println("2. 회원가입");
-			System.out.println("3. 종료");
-			System.out.print("선택: ");
+			printMenu();
 			char choice = scan.next().charAt(0);
 
 			if (choice == '1') {
@@ -67,15 +73,23 @@ public class Bidder {
 		}
 
 	}
+	
+	public void printBidMenu() {
+		System.out.println("1. 입찰하기");
+		System.out.println("2. 경매기록조회");
+		System.out.println("3. 로그아웃");
+		System.out.print("선택: ");
+	}
+	
 	private void bidStart() {
+		System.out.println(member.getMe_id() + "님 환영합니다.");
+		
 		while (true) {
-			System.out.println("1. 입찰하기");
-			System.out.println("2. 경매기록조회");
-			System.out.println("3. 나가기");
-			System.out.print("선택: ");
+			printBidMenu();
 			char choice = scan.next().charAt(0);
-
-			if (choice == '1') {	
+			
+			switch(choice) {
+			case '1':
 				if(auctionState) {
 					System.out.print("입찰가 입력 > ");
 					int bid = scan.nextInt();
@@ -87,11 +101,17 @@ public class Bidder {
 				} else {
 					System.out.println("진행중인 경매가 없습니다.");
 				}
-
-			} else if (choice == '2') {
-			} else if (choice == '3') {
 				break;
-			} else {
+			case '2':
+				List<AuctionVO> list = auctionController.getAuctionList(member.getMe_id());
+				System.out.println(member.getMe_id() + " 님의 낙찰품");
+				for(AuctionVO vo : list)
+					System.out.println(vo);
+				break;
+			case '3':
+				System.out.println("로그아웃합니다");
+				break;
+			default:
 				System.out.println("잘못된 선택입니다.");
 			}
 		}

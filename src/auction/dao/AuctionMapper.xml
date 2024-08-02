@@ -19,6 +19,9 @@
 		where
 			au_num = #{au_num}
 	</update>
+	<select id="selectAuctionList">
+		select * from auction where au_me_id = #{me_id} 
+	</select>
 </mapper>
 
 
