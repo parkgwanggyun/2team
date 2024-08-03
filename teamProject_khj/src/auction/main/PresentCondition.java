@@ -1,5 +1,6 @@
 package auction.main;
 
+import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -9,13 +10,12 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PresentCondition{
-	//경매현황에는 경매품명, 시작가, 최고입찰가, 종료시간, 인상액이, 입찰id가 있다
+	//경매현황에는 경매품명, 시작가, 최고입찰가, 종료시간, 인상액이 있다
 	private String name;
 	private int startPrice;
 	private int highestBid;
 	private LocalTime endTime;
 	private int increment;
-	private String id;
 		
 	public String getEndTimeToString() {
 		String endTime = this.endTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
@@ -31,6 +31,8 @@ public class PresentCondition{
 		return "진행중인 경매 [경매품: " + name + "] [시작가: " + startPrice + "] [최고입찰가: " 
 	+ highestBid + "] [종료시간: " + endTime + "] [최소 입찰 가능액: " + increment + "]";
 	}
+	
+	
 
 // // yyyy-MM-dd HH:mm:ss 형식으로 변경하기
 //	String parsedLocalDateTimeNow = localDateTimeNow.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));

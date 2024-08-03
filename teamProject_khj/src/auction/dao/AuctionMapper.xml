@@ -25,10 +25,8 @@
 	<select id="selectSearchAuctionList" resultType="AuctionVO">
 		select * from auction
 		where
-			au_date like concat('%',#{search},'%') 
-			or
-			au_name like concat('%',#{search},'%') 
-			or
+			au_date like concat('%',#{search},'%') or
+			au_name like concat('%',#{search},'%') or
 			au_me_id like concat('%',#{search},'%')
 	</select>
 <!--  		
@@ -65,9 +63,7 @@
 	    FROM bid b
 	    INNER JOIN auction a ON b.bi_au_num = a.au_num
 	    WHERE 
-	   		a.au_date like concat('%',#{search},'%') or
-			a.au_name like concat('%',#{search},'%') or
-			b.bi_me_id like #{id}
+			b.bi_me_id like concat('%',#{id},'%')
 	</select>
 	
 </mapper>

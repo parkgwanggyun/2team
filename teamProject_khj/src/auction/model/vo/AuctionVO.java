@@ -1,7 +1,5 @@
 package auction.model.vo;
 
-import java.text.DecimalFormat;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,13 +20,10 @@ public class AuctionVO {
 
 	@Override
 	public String toString() {
-		return "" + au_date + "  |  경매품: " + au_name + "  |  시작가: "
-				+ getFormatWon(au_start_price) + "  |  낙찰가: " + getFormatWon(au_winning_bid) + "  |  낙찰자ID: " + au_me_id + "";
+		return "[" + au_num + "][" + au_date + "][경매품: " + au_name + "][시작가: "
+				+ au_start_price + "][낙찰가: " + au_winning_bid + "][낙찰자ID: " + au_me_id + "]";
 	}
 		
-	public String getFormatWon(int price) {
-		DecimalFormat format = new DecimalFormat("###,###,###,###");
-		return format.format(price);
-	}
+	
 	
 }

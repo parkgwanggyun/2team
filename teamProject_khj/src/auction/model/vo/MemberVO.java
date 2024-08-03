@@ -28,8 +28,8 @@ public class MemberVO {
 	
 	@Override
 	public String toString() {
-		return "ID: " + me_id + "  |  이름: " + me_name + "  |  주소: "
-				+ me_address + "  |  " + me_contact + " ";
+		return "[아이디:" + me_id + "]  [이름: " + me_name + "]  [주소: "
+				+ me_address + "]  [연락처: " + me_contact + "]";
 	}
 	
 	

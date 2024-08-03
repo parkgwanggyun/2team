@@ -1,6 +1,5 @@
 package auction.controller;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Scanner;
 
@@ -27,10 +26,8 @@ public class AuctionController {
 		AuctionVO auction = new AuctionVO(au_name, au_start_price);
 		if(auctionService.insertAuction(auction)) {
 			System.out.println("[경매 시작]");
-			PrintController.bar();
 		} else {
-			System.out.println("[경매기록 실패]");
-			PrintController.bar();
+			System.out.println("[기록 실패]");
 		}
 	}
 
@@ -57,71 +54,40 @@ public class AuctionController {
 		}
 	}
 
-	public void searchAuctionList() {
-		System.out.print("날짜|경매품|아이디 입력 >");
-		scan.nextLine();
-		String search = scan.nextLine();	
+	public void searchAuctionList(String search) {
 		List<AuctionVO> list =	auctionService.getSearchAuctionList(search);
 		if(list.size() == 0) {
 			System.out.println("일치하는 경매 기록이 없습니다.");
 		}
-		if(search.equals("")) {
-			search = "전체";
-		}
-		System.out.println("<'"+search+"' 검색 결과>");
+		System.out.println("[검색 결과]");
 		for(AuctionVO auction : list) {
 			System.out.println(auction);
 		}
 		
 	}
 
-	public void searchBidList() {
-		System.out.print("날짜|경매품|아이디 입력 >");
-		scan.nextLine();
-		String search = scan.nextLine();
+	public void searchBidList(String search) {
 		List<BidVO> list =	auctionService.getSearchBidList(search);
 		if(list.size() == 0) {
 			System.out.println("일치하는 입찰 기록이 없습니다.");
 		}
-		if(search.equals("")) {
-			search = "전체";
-		}
-		System.out.println("<'"+search+"' 검색 결과>");
+		System.out.println("[검색 결과]");
 		for(BidVO bid : list) {
-			String au_name = bid.getAuction().getAu_name();
-			int bi_price = bid.getBi_price();
-			System.out.println("" + bid.getAuction().getAu_date()+"  |  경매품: " + au_name 
-					+"  |  입찰가: " + getFormatWon(bi_price) + "  |  입찰ID: " + bid.getBi_me_id()+"");
+			System.out.println("[" + bid.getAuction().getAu_date()+"][경매품: " + bid.getAuction().getAu_name() 
+					+"][입찰가: " + bid.getBi_price() + "][입찰자ID: " + bid.getBi_me_id()+"]");
 		}
 	}
 
 	public void getBidListById(String id) {
-		System.out.print("검색(날짜|경매품) > ");
-		scan.nextLine();
-		String search = scan.nextLine();
-		List<BidVO> list =	auctionService.getSearchBidListById(id, search);
+		List<BidVO> list =	auctionService.getSearchBidListById(id);
 		if(list.size() == 0) {
-			System.out.println("> 일치하는 경매기록이 없습니다.");
+			System.out.println("경매기록이 없습니다.");
 		}
-		if(search.equals("")) {
-			search = "전체";
-		}
-		System.out.println("<'"+search+"' 검색 결과>");
+		System.out.println("[검색 결과]");
 		for(BidVO bid : list) {
-			String au_name = bid.getAuction().getAu_name();
-			int bi_price = bid.getBi_price();
-			System.out.println("" + bid.getAuction().getAu_date()+"  |  경매품: " + au_name 
-					+"  |  입찰가: " + getFormatWon(bi_price) + "  |  입찰ID: " + bid.getBi_me_id()+"");
+			System.out.println("[" + bid.getAuction().getAu_date()+"][경매품: " + bid.getAuction().getAu_name() 
+					+"][입찰가: " + bid.getBi_price() + "][입찰자ID: " + bid.getBi_me_id()+"]");
 		}
-	}
-	public String getFormatWon(int price) {
-		DecimalFormat format = new DecimalFormat("###,###,###,###");
-		return format.format(price);
-	}
-	public String getFormatWon(String price) {
-		int priceInt = Integer.parseInt(price);
-		DecimalFormat format = new DecimalFormat("###,###,###,###");
-		return format.format(priceInt);
 	}
 
 }
