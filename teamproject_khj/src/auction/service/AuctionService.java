@@ -19,6 +19,6 @@ public interface AuctionService {
 
 	List<BidVO> getSearchBidList(String search);
 
-	List<BidVO> getSearchBidListById(String id);
+	List<BidVO> getSearchBidListById(String id, String search);
 
 }

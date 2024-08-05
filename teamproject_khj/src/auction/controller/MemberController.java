@@ -33,6 +33,7 @@ public class MemberController {
 
 		if(memberService.insertMember(member)) {
 			System.out.println("[회원 추가 완료]");
+			PrintController.bar();
 		} else {
 			System.out.println("[추가 실패 : 등록된 아이디]");
 		}
@@ -50,6 +51,12 @@ public class MemberController {
 		String password = scan.next();
 		if(!Pattern.matches(getRegex("password"), password)) {
 			System.out.println("[영문+숫자 4~14자]");
+			return null;
+		}
+		System.out.print("비밀번호 확인 > ");
+		String password2 = scan.next();
+		if(!password.equals(password2)) {
+			System.out.println("[비밀번호가 일치하지 않습니다.]");
 			return null;
 		}
 		System.out.print("이름 > ");
@@ -79,37 +86,57 @@ public class MemberController {
 		//수정하려는 회원 아이디 입력
 		System.out.println("수정할 회원 아이디 입력 >");
 		scan.nextLine();
-		String memberId = scan.nextLine();
+		String id = scan.nextLine();
 		//수정하려는 학생이 있는지 없는지 확인
-		if(!memberService.exists(memberId)) {
+		if(!memberService.exists(id)) {
 			System.out.println("[등록되지 않은 아이디]");
 			return;
 		} 
 		MemberVO newMember = inputUpdateMember();
 
-		if(memberService.updateMember(memberId, newMember)) {
-			System.out.println("[회원정보 수정]");
+		if(memberService.updateMember(id, newMember)) {
+			System.out.println("[회원 수정 완료]");
+			PrintController.bar();
 			return;
 		}
-		System.out.println("[수정 실패]");		
+		System.out.println("[수정 실패]");	
+		PrintController.bar();
 	}
 	private MemberVO inputUpdateMember() {
 		System.out.print("새 비밀번호 입력 > ");
-		String me_password = scan.nextLine();
+		String password = scan.nextLine();
+		if(!Pattern.matches(getRegex("password"), password)) {
+			System.out.println("[영문+숫자 4~14자]");
+			return null;
+		}
 		System.out.print("새 이름 입력 > ");
-		String me_name = scan.nextLine();
+		String name = scan.next();
+		if(!Pattern.matches(getRegex("name"), name)) {
+			System.out.println("[영문 2~10자, 한글 2~5자]");
+			return null;
+		}
 		System.out.print("새 주소 입력 > ");
-		String me_address = scan.nextLine();
-		System.out.print("새 연락처 입력 > ");
-		String me_contact = scan.nextLine();
-		return new MemberVO(me_password, me_name, me_address, me_contact);		
+		scan.nextLine();
+		String address = scan.nextLine();
+		if(!Pattern.matches(getRegex("address"), address)) {
+			System.out.println("[최대 35자까지만 가능]");
+			return null;
+		}
+		System.out.print("새 전화번호 입력 > ");
+		String contact = scan.next();;
+		if(!Pattern.matches(getRegex("contact"), contact)) {
+			System.out.println("[전화번호 형식이 잘못됨]");
+			return null;
+		}
+		return new MemberVO(password, name, address, contact);		
 	} // -----------------------------------------------------------------------
 	public void deleteMember() {
 		System.out.println("삭제할 회원 아이디 입력 >");
 		scan.nextLine();
-		String memberId = scan.nextLine();
-		if(memberService.deleteMember(memberId)) {
+		String id = scan.nextLine();
+		if(memberService.deleteMember(id)) {
 			System.out.println("[회원 삭제 완료]");
+			PrintController.bar();
 			return;
 		}
 		System.out.println("[삭제 실패 : 등록되지 않은 아이디]");
@@ -124,10 +151,14 @@ public class MemberController {
 			System.out.println("[검색 실패 : 일치하는 회원 정보 없음]");
 			return;
 		}
+		if(searchMemberInfo.equals("")) {
+			searchMemberInfo = "전체";
+		}
 		System.out.println("<'"+searchMemberInfo+ "' 검색 결과>");
 		for(MemberVO member : searchList) {
 			System.out.println(member);
 		}
+		PrintController.bar();
 	}
 	
 	// 로그인을 하기 위한 기능
@@ -174,20 +205,12 @@ public class MemberController {
 				return "^([가-힣]{2,5}|[a-zA-Z]{2,10})$";
 			}
 			if(regex.equals("address")) {
-				return "^[a-zA-Z0-9가-힣]{1,35}$";
+				return "^[a-zA-Z0-9가-힣 ]{1,35}$";
 			}
 			if(regex.equals("contact")) {
 				return "^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$";
 			}
 			return null;
 		}
-		public String getFormatWon(int price) {
-			DecimalFormat format = new DecimalFormat("###,###,###,###");
-			return format.format(price);
-		}
-		public String getFormatWon(String price) {
-			int priceInt = Integer.parseInt(price);
-			DecimalFormat format = new DecimalFormat("###,###,###,###");
-			return format.format(priceInt);
-		}
+		
 }

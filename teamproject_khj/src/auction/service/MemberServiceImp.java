@@ -73,7 +73,7 @@ public class MemberServiceImp implements MemberService{
 		if(searchMemberInfo == null) {
 			return null;
 		}
-		searchMemberInfo = "%"+searchMemberInfo+"%";
+//		searchMemberInfo = "%"+searchMemberInfo+"%";
 		return memberDao.selectMemberList(searchMemberInfo);
 	}
 	
