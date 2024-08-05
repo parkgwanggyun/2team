@@ -189,8 +189,8 @@ public class Bidder {
 		int highestPriceInt = Integer.parseInt(highestPrice);
 		int incrementInt = Integer.parseInt(increment);		
 		possibleMinBid = highestPriceInt + incrementInt; // 입찰 가능 금액
-		System.out.println("진행중인 경매 [경매품:] " + name + " [시작가:] " + getFormatWon(startPrice) + " [최고입찰가:] " 
-				+ getFormatWon(highestPrice) +"("+id+") [종료시간:] " + endTime + "\n[최소 입찰 가능액:] " + getFormatWon(possibleMinBid) + "");	
+		System.out.println("경매 현황 > 경매품: " + name + "  |  최고입찰가: " + getFormatWon(highestPrice) +"("+id+")"
+				+"  |  종료시간: " + endTime + "\n[최소 입찰 가능액: " + getFormatWon(possibleMinBid) + "]");	
 	}
 
 	// 세자리마다 , 넣어주는 기능

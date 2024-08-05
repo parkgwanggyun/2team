@@ -219,6 +219,8 @@ public class Auctioneer {
 			if(clients.size() > 0) {
 				for(PrintWriter out : clients) {
 				out.println("AUCTION_START::경매를 시작합니다.");
+				out.println("경매품: " + presentCondition.getName() + "  |  시작가: " + presentCondition.getStartPrice() 
+				 	+ "  |  인상액:" + presentCondition.getIncrement()+ "  |  종료시간: " + presentCondition.getEndTimeToString());
 				}
 			}
 			auctionTimer();
@@ -373,7 +375,6 @@ public class Auctioneer {
 		}
 		public void handleJoin(String request) {
 			if(auctionState) {
-				out.println("AUCTION_ON::경매가 진행 중입니다.");
 				sendPc(presentCondition); 
 			} else {
 				out.println("AUCTION_OFF::진행 중인 경매가 없습니다.");
@@ -413,7 +414,7 @@ public class Auctioneer {
 	//정규표현식 모음
 	private String getRegex(String regex) {
 		if(regex.equals("itemName")) {
-			return "^[a-zA-Z0-9가-힣]{1,20}$";
+			return "^[a-zA-Z0-9가-힣 ]{1,20}$";
 		}
 		if(regex.equals("validityPeriod")) {
 			return "";
