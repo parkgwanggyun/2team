@@ -57,9 +57,9 @@ public class Auctioneer {
 				if(exitFlag) {
 					break;
 				}
-				if(clientSocket.isConnected()) {
-					System.out.println("[" + clientSocket + "에서 접속]");
-				}	
+				//				if(clientSocket.isConnected()) {
+				//					System.out.println("[" + clientSocket + "에서 접속]");
+				//				}	
 
 				ClientHandler clientHandler = new ClientHandler(clientSocket);
 				clientHandler.start();
@@ -77,7 +77,7 @@ public class Auctioneer {
 				System.out.println("1. 회원 관리");
 				System.out.println("2. 경매 관리");
 				System.out.println("3. 종료");
-				System.out.print("메뉴 선택 : ");
+				System.out.print("메뉴 선택 >> ");
 
 				menu = nextInt();
 				runMenu(menu);
@@ -105,8 +105,8 @@ public class Auctioneer {
 			}
 			break;
 		default :
-			System.out.println(menu);
-			System.out.println("잘못된 메뉴 입니다1.");
+//			System.out.println(menu);
+			System.out.println("잘못된 메뉴 입니다.");
 		}
 	}
 	public void auctionMenuList() {
@@ -117,7 +117,7 @@ public class Auctioneer {
 			System.out.println("3. 경매기록 조회");
 			System.out.println("4. 입찰기록 조회");
 			System.out.println("5. 이전 메뉴");
-			System.out.print("메뉴 선택 : ");
+			System.out.print("메뉴 선택 >> ");
 
 			menu = nextInt();
 			runAuctionMenu(menu);
@@ -133,7 +133,7 @@ public class Auctioneer {
 			System.out.println("3. 회원 삭제");
 			System.out.println("4. 회원 조회");
 			System.out.println("5. 이전 메뉴");
-			System.out.print("메뉴 선택 : ");
+			System.out.print("메뉴 선택 >> ");
 
 			menu = nextInt();
 			runMemberMenu(menu);
@@ -178,12 +178,18 @@ public class Auctioneer {
 					auctionState = false;
 					for(PrintWriter out : clients) {
 						out.println("FINISH::경매가 종료되었습니다. ");
-						out.println("이번 경매품 " + presentCondition.getName() + "은(는) " + presentCondition.getId()
-						+ "님에게 " + presentCondition.getHighestBid() + "원에 낙찰되었습니다.");
+						if(presentCondition.getId().equals("아이디")) {
+							out.println("이번 경매품 " + presentCondition.getName() + "은(는) 유찰되었습니다.");
+						} else {
+							out.println("이번 경매품 " + presentCondition.getName() + "은(는) " + presentCondition.getId()
+							+ "님에게 " + presentCondition.getHighestBid() + "원에 낙찰되었습니다.");
+						}
 					}
+					PrintController.bar();
 					System.out.println("경매품 <" + presentCondition.getName() + "> " + presentCondition.getId() + "님이 " 
 							+ presentCondition.getHighestBid() + "원에 낙찰");
 					auctionController.finishAuction();
+					presentCondition = null;
 					break;
 				}
 			}
@@ -196,59 +202,56 @@ public class Auctioneer {
 		switch (menu) {
 		case 1 : 
 			if(auctionState) {
-				System.out.println("진행중인 경매가 있습니다.");
+				System.out.println("진행 중인 경매가 있습니다.");
+				PrintController.bar();
 				break;
 			}
 			presentCondition = insertItem();
 			if(presentCondition != null) {
 				System.out.println("[등록 완료]");
-				PrintController.bar();
+				PrintController.mniBar();
 			}
 			break;
 		case 2 :
 			if(auctionState) {
-				System.out.println("진행중인 경매가 있습니다.");
+				System.out.println("진행 중인 경매가 있습니다.");
+				PrintController.bar();
 				break;
 			}
 			if(presentCondition == null) {
-				System.out.println("먼저 경매정보를 입력해주세요");				
+				System.out.println("먼저 경매정보를 입력해주세요");	
+				PrintController.bar();
 				break;
 			}
 			auctionState = true;
 			auctionController.startAuction(presentCondition); //경매기록
 			if(clients.size() > 0) {
 				for(PrintWriter out : clients) {
-				out.println("AUCTION_START::경매를 시작합니다.");
-				out.println("경매품: " + presentCondition.getName() + "  |  시작가: " + presentCondition.getStartPrice() 
-				 	+ "  |  인상액:" + presentCondition.getIncrement()+ "  |  종료시간: " + presentCondition.getEndTimeToString());
+					out.println("AUCTION_START::");
+//					out.println("AUCTION_START::"+ presentCondition.getName() + "::" + presentCondition.getStartPrice() 
+//					+"::" + presentCondition.getEndTimeToString() + "::" + presentCondition.getIncrement());
 				}
 			}
 			auctionTimer();
 			break;
 		case 3 :
-			searchAuction();
+			//컨트롤에게 전체 경매기록 출력을 시킴
+			auctionController.searchAuctionList();
+			PrintController.bar();
 			break;
 		case 4 :
-			searchBid();
+			//검색된 입찰기록 출력
+			auctionController.searchBidList();
+			PrintController.bar();
 			break;
 		case 5 :
 			PrintController.mniBar();
 			break;
 		default :
 			System.out.println("잘못된 메뉴 입니다.");
+			PrintController.mniBar();
+			
 		}		
-	}
-
-	private void searchBid() {
-		//검색된 입찰기록 출력
-		auctionController.searchBidList();
-		PrintController.bar();
-	}
-
-	private void searchAuction() {
-		//컨트롤에게 전체 경매기록 출력을 시킴
-		auctionController.searchAuctionList();
-		PrintController.bar();
 	}
 
 	//	경매품명, 시작가, 입찰 유효 시간, 인상액 을 입력하여 등록하는 기능
@@ -288,11 +291,12 @@ public class Auctioneer {
 			finishAuction = endTime;
 			int highestBid = startPrice;
 			//경매현황에는 경매품명, 시작가, 최고입찰가, 종료시간, 인상액 있다
-			PresentCondition presentCondition = new PresentCondition(name, startPrice, highestBid, endTime, increment, "ID");
+			PresentCondition presentCondition = new PresentCondition(name, startPrice, highestBid, endTime, increment, "아이디");
 			return presentCondition;
 			//경매기록에는 날짜, 경매품명, 시작가, 낙찰가, 낙찰자 아이디가 있다.
 		} catch (InputMismatchException e) {
 			System.out.println("[입력이 올바르지 않음]");
+			PrintController.mniBar();
 			scan.nextLine();
 			return null;
 		}
@@ -318,24 +322,27 @@ public class Auctioneer {
 				while ((request = in.readLine()) != null) {
 					if (request.startsWith("JOIN")) {
 						handleJoin(request);
-					}
-					else if (request.startsWith("BID")) {
+					} else if (request.startsWith("BID")) {
 						handleBid(request);
 					} else if (request.startsWith("REGISTER")) {
 						handleRegister(request);
 					} else if (request.startsWith("LOGIN")) {						
 						handleLogin(request);
+					} else if (request.startsWith("LOGOUT")) {						
+						handleLogout(request);
+					} else if (request.startsWith("FINISH")) {						
+						firstSend = true;
 					} else if (request.equals("EXIT")) {
 						break;
 					}						
 				}
-				clientSocket.close();
+				//				clientSocket.close();
 			} catch (IOException e) {
 			} finally {
 				if(logId != null) {
-					System.out.println("[나감 : " + logId + "]");
+					System.out.println("[나감 > " + logId + "]");
 				} else {
-					System.out.println("[나감 : " + clientSocket + "]");
+					System.out.println("[나감 > " + clientSocket + "]");
 				}
 				clients.remove(out);
 				try {
@@ -345,7 +352,7 @@ public class Auctioneer {
 			}
 		}		
 		private void handleBid(String request) {
-			//들어온 입찰 처리
+			//들어온 입찰 처리			
 			if(auctionState) {
 				String[] parts = request.split("::");
 				String id = parts[1];
@@ -372,10 +379,13 @@ public class Auctioneer {
 			MemberVO member = new MemberVO(id, "", name, address, contact);
 			System.out.println("<신규회원 가입> ");
 			System.out.println(member);
+			PrintController.bar();
 		}
 		public void handleJoin(String request) {
 			if(auctionState) {
-				sendPc(presentCondition); 
+				if(firstSend) {
+					sendPc(presentCondition); 
+				}
 			} else {
 				out.println("AUCTION_OFF::진행 중인 경매가 없습니다.");
 			}
@@ -386,7 +396,22 @@ public class Auctioneer {
 			String[] parts = request.split("::");
 			String id = parts[1];
 			logId = id;
-			System.out.println("[로그인 > "+ id+"]");			
+			System.out.println("[로그인 >> "+ id+"]");	
+			firstSend = true;
+			if(auctionState) {
+				out.println("AUCTION_ON::경매가 진행 중입니다.");
+			} else {
+				out.println("AUCTION_OFF::진행 중인 경매가 없습니다.");
+			}
+		}
+		// 로그아웃 요청 처리
+		public void handleLogout(String request) {
+			String[] parts = request.split("::");
+			String id = parts[1];
+			logId = id;
+			System.out.println("[로그아웃 >> "+ id+"]");	
+			firstSend = true;
+				out.println("AUCTION_OUT::");
 		}
 
 		// 로그인 중인 회원들에게 경매현황을 전송하는 기능
@@ -399,7 +424,7 @@ public class Auctioneer {
 			String id = presentCondition.getId();
 			if(firstSend) {
 				out.println("PRESENT_CONDITION::" + name + "::" + startPrice +"::" + highestPrice + "::" + endTime + "::" + increment
-						+ "::" + id);
+						+ "::" + id); // 수정 
 				firstSend = false;
 			} else {
 				for(PrintWriter out : clients) {
@@ -430,7 +455,7 @@ public class Auctioneer {
 			return scan.nextInt();
 		} catch (InputMismatchException e) {
 			scan.nextLine();
-			System.out.println();
+			System.out.println("숫자만 입력가능");
 			return Integer.MIN_VALUE;
 		}
 	}

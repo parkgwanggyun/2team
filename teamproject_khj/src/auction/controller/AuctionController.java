@@ -27,10 +27,10 @@ public class AuctionController {
 		AuctionVO auction = new AuctionVO(au_name, au_start_price);
 		if(auctionService.insertAuction(auction)) {
 			System.out.println("[경매 시작]");
-			PrintController.bar();
+			PrintController.mniBar();
 		} else {
 			System.out.println("[경매기록 실패]");
-			PrintController.bar();
+			PrintController.mniBar();
 		}
 	}
 
@@ -110,7 +110,7 @@ public class AuctionController {
 		for(BidVO bid : list) {
 			String au_name = bid.getAuction().getAu_name();
 			int bi_price = bid.getBi_price();
-			System.out.println("" + bid.getAuction().getAu_date()+"  |  경매품: " + au_name 
+			System.out.println("["+ bid.getAuction().getAu_num() + "] " + bid.getAuction().getAu_date()+"  |  경매품: " + au_name 
 					+"  |  입찰가: " + getFormatWon(bi_price) + "  |  입찰ID: " + bid.getBi_me_id()+"");
 		}
 	}
