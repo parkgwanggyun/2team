@@ -80,10 +80,10 @@ public class AuctionServiceImp implements AuctionService{
 	}
 
 	@Override
-	public List<BidVO> getSearchBidListById(String id) {
+	public List<BidVO> getSearchBidListById(String id, String search) {
 		if(id == null) {
 			return null;
 		}
-		return auctionDao.getBidWithAuctionById(id);
+		return auctionDao.getBidWithAuctionById(id, search);
 	}
 }

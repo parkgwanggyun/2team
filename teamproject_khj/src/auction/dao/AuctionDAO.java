@@ -22,6 +22,6 @@ public interface AuctionDAO {
 
 	List<BidVO> getBidWithAuction(@Param("search")String search);
 
-	List<BidVO> getBidWithAuctionById(@Param("id")String id);
+	List<BidVO> getBidWithAuctionById(@Param("id")String id, @Param("search")String search);
 
 }

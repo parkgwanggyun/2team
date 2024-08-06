@@ -44,10 +44,10 @@
 		from 
 			member 
 		where 
-			binary(me_id) like #{search} 
-			or me_name like #{search} 
-			or me_address like #{search}
-			or me_contact like #{search} 
+			binary(me_id) like concat('%',#{search},'%') 
+			or me_name like concat('%',#{search},'%') 
+			or me_address like concat('%',#{search},'%') 
+			or me_contact like concat('%',#{search},'%') 
 	</select>
 </mapper>
 
