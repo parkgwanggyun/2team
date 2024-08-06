@@ -27,10 +27,10 @@ public class AuctionController {
 		AuctionVO auction = new AuctionVO(au_name, au_start_price);
 		if(auctionService.insertAuction(auction)) {
 			System.out.println("[경매 시작]");
-			PrintController.mniBar();
+			PrintController.bar();
 		} else {
 			System.out.println("[경매기록 실패]");
-			PrintController.mniBar();
+			PrintController.bar();
 		}
 	}
 
@@ -49,7 +49,8 @@ public class AuctionController {
 	public void printAuctionList() {
 		List<AuctionVO> list =	auctionService.getAuctionList();
 		if(list.size() == 0) {
-			System.out.println("경매 기록이 없습니다.");
+			System.out.println(">>> 경매 기록이 없습니다.");
+			return;
 		}
 		System.out.println("[전체 경매기록]");
 		for(AuctionVO auction : list) {
@@ -62,13 +63,19 @@ public class AuctionController {
 		scan.nextLine();
 		String search = scan.nextLine();	
 		List<AuctionVO> list =	auctionService.getSearchAuctionList(search);
-		if(list.size() == 0) {
-			System.out.println("일치하는 경매 기록이 없습니다.");
-		}
 		if(search.equals("")) {
 			search = "전체";
 		}
-		System.out.println("<'"+search+"' 검색 결과>");
+		if(list.size() == 0) {
+			if(search.equals("전체")) {
+				System.out.println(">>> 경매 기록이 없습니다.");
+			} else {
+				System.out.println(">>> 일치하는 경매 기록이 없습니다.");
+			}
+			return;
+		} else {
+			System.out.println("<'"+search+"' 검색 결과>");
+		}
 		for(AuctionVO auction : list) {
 			System.out.println(auction);
 		}
@@ -80,13 +87,19 @@ public class AuctionController {
 		scan.nextLine();
 		String search = scan.nextLine();
 		List<BidVO> list =	auctionService.getSearchBidList(search);
-		if(list.size() == 0) {
-			System.out.println("일치하는 입찰 기록이 없습니다.");
-		}
 		if(search.equals("")) {
 			search = "전체";
 		}
-		System.out.println("<'"+search+"' 검색 결과>");
+		if(list.size() == 0) {
+			if(search.equals("전체")) {
+				System.out.println(">>> 입찰 기록이 없습니다.");
+			} else {
+				System.out.println(">>> 일치하는 입찰 기록이 없습니다.");
+			}
+			return;
+		} else {
+			System.out.println("<'"+search+"' 검색 결과>");
+		}
 		for(BidVO bid : list) {
 			String au_name = bid.getAuction().getAu_name();
 			int bi_price = bid.getBi_price();
@@ -100,13 +113,20 @@ public class AuctionController {
 		scan.nextLine();
 		String search = scan.nextLine();
 		List<BidVO> list =	auctionService.getSearchBidListById(id, search);
-		if(list.size() == 0) {
-			System.out.println("> 일치하는 경매기록이 없습니다.");
-		}
 		if(search.equals("")) {
 			search = "전체";
 		}
-		System.out.println("<'"+search+"' 검색 결과>");
+		if(list.size() == 0) {
+			if(search.equals("전체")) {
+				System.out.println(">>> 경매 기록이 없습니다.");
+			} else {
+				System.out.println(">>> 일치하는 경매 기록이 없습니다.");
+			}
+			return;
+		} else {
+			System.out.println("<'"+search+"' 검색 결과>");
+		}
+		
 		for(BidVO bid : list) {
 			String au_name = bid.getAuction().getAu_name();
 			int bi_price = bid.getBi_price();

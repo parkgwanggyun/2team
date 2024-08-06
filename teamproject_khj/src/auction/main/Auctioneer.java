@@ -89,11 +89,11 @@ public class Auctioneer {
 	public void runMenu(int menu)  {
 		switch (menu) {
 		case 1 : 
-			PrintController.mniBar();
+			PrintController.bar();
 			memberMenuList();
 			break;
 		case 2 :
-			PrintController.mniBar();
+			PrintController.bar();
 			auctionMenuList();
 			break;
 		case 3 :
@@ -106,7 +106,7 @@ public class Auctioneer {
 			break;
 		default :
 //			System.out.println(menu);
-			System.out.println("잘못된 메뉴 입니다.");
+			System.out.println(">>> 잘못된 메뉴 입니다.");
 		}
 	}
 	public void auctionMenuList() {
@@ -144,22 +144,27 @@ public class Auctioneer {
 	private void runMemberMenu(int menu) {
 		switch (menu) {
 		case 1 : 
+			PrintController.bar();
 			memberController.insertMember();
 			break;
 		case 2 :
+			PrintController.bar();
 			memberController.updateMember();
 			break;
 		case 3 :
+			PrintController.bar();
 			memberController.deleteMember();
 			break;
 		case 4 :
+			PrintController.bar();
 			memberController.searchMember();
 			break;
 		case 5 :
-			PrintController.mniBar();
+			PrintController.bar();
 			break;
 		default :
-			System.out.println("잘못된 메뉴 입니다.");
+			PrintController.bar();
+			System.out.println(">>> 잘못된 메뉴 입니다.");
 		}
 	}
 
@@ -170,14 +175,14 @@ public class Auctioneer {
 			while(!exitFlag) {
 				if(finishAuction.minusSeconds(count).isBefore(LocalTime.now())) {
 					for(PrintWriter out : clients) {
-						out.println("경매 종료까지 " + count + "초 남았습니다.");
+						out.println(">>> 경매 종료까지 " + count + "초 남았습니다.");
 					}
 					count--;
 				}
 				if(count == 0) {
 					auctionState = false;
 					for(PrintWriter out : clients) {
-						out.println("FINISH::경매가 종료되었습니다. ");
+						out.println("FINISH::>>> 경매가 종료되었습니다. ");
 						if(presentCondition.getId().equals("아이디")) {
 							out.println("이번 경매품 " + presentCondition.getName() + "은(는) 유찰되었습니다.");
 						} else {
@@ -186,7 +191,7 @@ public class Auctioneer {
 						}
 					}
 					PrintController.bar();
-					System.out.println("경매품 <" + presentCondition.getName() + "> " + presentCondition.getId() + "님이 " 
+					System.out.println(">>> 경매품 <" + presentCondition.getName() + "> " + presentCondition.getId() + "에게 " 
 							+ presentCondition.getHighestBid() + "원에 낙찰");
 					auctionController.finishAuction();
 					presentCondition = null;
@@ -201,25 +206,27 @@ public class Auctioneer {
 	private void runAuctionMenu(int menu) {
 		switch (menu) {
 		case 1 : 
+			PrintController.bar();
 			if(auctionState) {
-				System.out.println("진행 중인 경매가 있습니다.");
+				System.out.println(">>> 진행 중인 경매가 있습니다.");
 				PrintController.bar();
 				break;
 			}
 			presentCondition = insertItem();
 			if(presentCondition != null) {
 				System.out.println("[등록 완료]");
-				PrintController.mniBar();
+				PrintController.bar();
 			}
 			break;
 		case 2 :
+			PrintController.bar();
 			if(auctionState) {
-				System.out.println("진행 중인 경매가 있습니다.");
+				System.out.println(">>> 진행 중인 경매가 있습니다.");
 				PrintController.bar();
 				break;
 			}
 			if(presentCondition == null) {
-				System.out.println("먼저 경매정보를 입력해주세요");	
+				System.out.println(">>> 먼저 경매정보를 입력해주세요");	
 				PrintController.bar();
 				break;
 			}
@@ -235,21 +242,24 @@ public class Auctioneer {
 			auctionTimer();
 			break;
 		case 3 :
+			PrintController.bar();
 			//컨트롤에게 전체 경매기록 출력을 시킴
 			auctionController.searchAuctionList();
 			PrintController.bar();
 			break;
 		case 4 :
+			PrintController.bar();
 			//검색된 입찰기록 출력
 			auctionController.searchBidList();
 			PrintController.bar();
 			break;
 		case 5 :
-			PrintController.mniBar();
+			PrintController.bar();
 			break;
 		default :
-			System.out.println("잘못된 메뉴 입니다.");
-			PrintController.mniBar();
+			PrintController.bar();
+			System.out.println(">>> 잘못된 메뉴 입니다.");
+			PrintController.bar();
 			
 		}		
 	}
@@ -257,7 +267,6 @@ public class Auctioneer {
 	//	경매품명, 시작가, 입찰 유효 시간, 인상액 을 입력하여 등록하는 기능
 	public PresentCondition insertItem() {
 		try {
-
 			System.out.print("경매품명 입력 > ");
 			scan.nextLine();
 			String name = scan.nextLine();
@@ -296,7 +305,7 @@ public class Auctioneer {
 			//경매기록에는 날짜, 경매품명, 시작가, 낙찰가, 낙찰자 아이디가 있다.
 		} catch (InputMismatchException e) {
 			System.out.println("[입력이 올바르지 않음]");
-			PrintController.mniBar();
+			PrintController.bar();
 			scan.nextLine();
 			return null;
 		}
@@ -364,7 +373,7 @@ public class Auctioneer {
 				}
 
 			} else {
-				out.println("AUCTION_OFF::진행 중인 경매가 없습니다.");
+				out.println("AUCTION_OFF::>>> 진행 중인 경매가 없습니다.");
 			}
 		}
 
@@ -387,7 +396,7 @@ public class Auctioneer {
 					sendPc(presentCondition); 
 				}
 			} else {
-				out.println("AUCTION_OFF::진행 중인 경매가 없습니다.");
+				out.println("AUCTION_OFF::>>> 진행 중인 경매가 없습니다.");
 			}
 		}
 
@@ -399,9 +408,9 @@ public class Auctioneer {
 			System.out.println("[ "+ id+" >> 로그인 ]");	
 			firstSend = true;
 			if(auctionState) {
-				out.println("AUCTION_ON::경매가 진행 중입니다.");
+				out.println("AUCTION_ON::>>> 경매가 진행 중입니다.");
 			} else {
-				out.println("AUCTION_OFF::진행 중인 경매가 없습니다.");
+				out.println("AUCTION_OFF::>>> 진행 중인 경매가 없습니다.");
 			}
 		}
 		// 로그아웃 요청 처리
@@ -455,7 +464,7 @@ public class Auctioneer {
 			return scan.nextInt();
 		} catch (InputMismatchException e) {
 			scan.nextLine();
-			System.out.println("잘못 입력하셨습니다.");
+			System.out.println(">>> 잘못 입력하셨습니다.");
 			return Integer.MIN_VALUE;
 		}
 	}
