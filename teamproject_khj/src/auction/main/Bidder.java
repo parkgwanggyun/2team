@@ -34,15 +34,21 @@ public class Bidder {
 	public Bidder() {
 		try {
 			socket = new Socket(SERVER_IP, SERVER_PORT);
-			System.out.println("- 서버에 연결되었습니다.");
+			System.out.println("-> 서버에 연결되었습니다.");
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
 
 		}  catch (Exception e) {
+			System.out.println("-> 서버와 연결 할수 없습니다.");
+			exitFlag = true;
+			return;
 		}
 	}
 	public void start() {       
 		while (true) {
+			if(exitFlag) {
+				break;
+			}
 			System.out.println("1. 로그인");
 			System.out.println("2. 회원가입");
 			System.out.println("3. 종료");
@@ -64,7 +70,9 @@ public class Bidder {
 				out.println("REGISTER::"+nMem.getMe_id()+"::"+nMem.getMe_name()+"::"
 						+ nMem.getMe_address() +"::"+ nMem.getMe_contact()); // 서버에 회원가입 알림
 			} else if (choice == '3') {
-				out.println("EXIT");
+				if(out != null) {
+					out.println("EXIT");
+				}
 				System.out.println("[프로그램 종료]");
 				exitFlag = true;
 				break;
@@ -236,6 +244,8 @@ public class Bidder {
 		String id = parts[6];
 		if(id.equals(member.getMe_id())) {
 			System.out.println("[입찰 성공]");
+		} else {
+			System.out.println(id + "님이 " + highestPrice + "원에 입찰!");
 		}
 		int highestPriceInt = Integer.parseInt(highestPrice);
 		int incrementInt = Integer.parseInt(increment);		
