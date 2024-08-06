@@ -1,6 +1,7 @@
+/bin/
 *.class
 .classpath
 .project
 .settings/
 
-teamproject2/.gitignore
+java_pgg/.gitignore
