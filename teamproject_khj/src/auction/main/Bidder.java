@@ -27,6 +27,7 @@ public class Bidder {
 	boolean auctionState = false;
 	boolean Bidding = false;
 	boolean exitFlag = false;
+	boolean logIn = false;
 	private Scanner scan = new Scanner(System.in);
 	MemberController memberController = new MemberController(scan);
 	AuctionController auctionController = new AuctionController(scan);
@@ -36,6 +37,7 @@ public class Bidder {
 			System.out.println(">>> 서버와 연결을 시도하는 중입니다.");
 			socket = new Socket(SERVER_IP, SERVER_PORT);
 			System.out.println(">>> 서버에 연결되었습니다.");
+			PrintController.bar();
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
 
@@ -57,14 +59,23 @@ public class Bidder {
 			int choice = nextInt();
 
 			if (choice == 1) {
+				PrintController.bar();
 				member = memberController.logIn();
+				PrintController.bar();
 				if(member != null) {
 					bidderReceiver();
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					out.println("LOGIN::"+ member.getMe_id()); // 서버에 로그인 알림
 					auctionStart();
 				}
 			} else if (choice == 2) {
+				PrintController.bar();
 				MemberVO nMem = memberController.register();
+				PrintController.bar();
 				if(nMem == null) {
 					continue;
 				}
@@ -78,13 +89,14 @@ public class Bidder {
 				exitFlag = true;
 				break;
 			} else {
-				System.out.println("잘못된 선택입니다.");
-				PrintController.mniBar();
+				System.out.println(">>> 잘못된 선택입니다.");
+				PrintController.bar();
 			}
 		}
 
 	}
 	private void auctionStart() {
+		logIn = true;
 		while (true) {
 			System.out.println("1. 경매 참여");
 			System.out.println("2. 경매기록조회");
@@ -93,23 +105,26 @@ public class Bidder {
 			int choice = nextInt();
 
 			if (choice == 1) {
+				PrintController.bar();
 				if(!auctionState) {
-					System.out.println("진행 중인 경매가 없습니다.");
-					PrintController.mniBar();
+					System.out.println(">>> 진행 중인 경매가 없습니다.");
+					PrintController.bar();
 					continue;
 				}
 				out.println("JOIN::");
 				Bidding = true;
 				bidStart();
-			} else if (choice == 2) {		
+			} else if (choice == 2) {	
+				PrintController.bar();
 				auctionController.getBidListById(member.getMe_id());
 				PrintController.bar();
 			} else if (choice == 3) {	
+				logIn = false;
 				out.println("LOGOUT::"+ member.getMe_id());
 				break;
 			} else {
-				System.out.println("잘못된 선택입니다.");
-				PrintController.mniBar();
+				System.out.println(">>> 잘못된 선택입니다.");
+				PrintController.bar();
 			}
 		}
 	}
@@ -121,9 +136,10 @@ public class Bidder {
 			System.out.print("선택: ");
 			int choice = nextInt();
 			if (choice == 1) {	
+				PrintController.bar();
 				if(!auctionState) {
-					System.out.println("진행 중인 경매가 없습니다.");
-					PrintController.mniBar();
+					System.out.println(">>> 진행 중인 경매가 없습니다.");
+					PrintController.bar();
 					continue;
 				}
 				out.println("JOIN::");
@@ -134,22 +150,28 @@ public class Bidder {
 						if(bid >= possibleMinBid) {
 							out.println("BID::" + member.getMe_id() + "::" + bid);
 						} else {
-							System.out.println(getFormatWon(possibleMinBid) + "원 이상만 입찰 가능합니다.");
-							PrintController.mniBar();
+							System.out.println(">>> " + getFormatWon(possibleMinBid) + "원 이상만 입찰 가능합니다.");
+							PrintController.bar();
 						}
 					} catch (InputMismatchException e) {
 						System.out.println("[입력이 올바르지 않음]");
-						PrintController.mniBar();
+						PrintController.bar();
 						scan.nextLine();
 						continue;
 					}
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-			} else if (choice == 2) {	
+			} else if (choice == 2) {
+				PrintController.bar();
 				Bidding = false;
 				break;
 			} else {
-				System.out.println("잘못된 선택입니다.");
-				PrintController.mniBar();
+				System.out.println(">>> 잘못된 선택입니다.");
+				PrintController.bar();
 			}
 		}
 	}
@@ -165,13 +187,14 @@ public class Bidder {
 							response = in.readLine();
 							if(response.startsWith("AUCTION_START")) {
 								if(auctionState) {
-									System.out.println("경매가 진행 중입니다.");
-									PrintController.mniBar();
+									System.out.println(">>> 경매가 진행 중입니다.");
 								} else {
-									System.out.println("경매를 시작합니다.");
-									PrintController.mniBar();
+									if(logIn) {
+										System.out.println(">>> 경매를 시작합니다.");
+									}
 									auctionState = true;
 								}
+								PrintController.bar();
 //								printStartAuctionPc(response);
 							}
 							else if(response.startsWith("AUCTION_ON")) {
@@ -179,19 +202,21 @@ public class Bidder {
 								String[] parts = response.split("::");
 								String notify = parts[1];
 								System.out.println(notify);
-								PrintController.mniBar();
+								PrintController.bar();
 							}
 							else if (response.startsWith("PRESENT_CONDITION")) {
 								auctionState = true;
 								printAuctionPc(response);
+								PrintController.bar();
 							} else if(response.startsWith("AUCTION_OFF")) {
 								auctionState = false;
 								String[] parts = response.split("::");
 								String notify = parts[1];
 								System.out.println(notify);
-								PrintController.mniBar();
+								PrintController.bar();
 							} else if(response.startsWith("AUCTION_OUT")) {
 								auctionState = false;
+								PrintController.bar();
 								break;
 							} else if (response.startsWith("FINISH")) {
 								auctionState = false;
@@ -200,8 +225,8 @@ public class Bidder {
 								System.out.println(notify);
 								response = in.readLine();
 								System.out.println(response);
-								PrintController.mniBar();
 								out.println("FINISH::");
+								PrintController.bar();
 							} else {
 								System.out.println(response);
 							}
@@ -246,14 +271,15 @@ public class Bidder {
 		if(id.equals(member.getMe_id())) {
 			System.out.println("[입찰 성공]");
 		} else {
-			System.out.println(id + "님이 " + highestPrice + "원에 입찰!");
+			if(!id.equals("아이디")) {
+				System.out.println(">>> " + id + "님이 " + getFormatWon(highestPrice) + "원에 입찰!");
+			}
 		}
 		int highestPriceInt = Integer.parseInt(highestPrice);
 		int incrementInt = Integer.parseInt(increment);		
 		possibleMinBid = highestPriceInt + incrementInt; // 입찰 가능 금액
 		System.out.println("경매 현황 > 경매품: " + name + "  |  최고입찰가: " + getFormatWon(highestPrice) +"("+id+")"
 				+"  |  종료시간: " + endTime + "\n[최소 입찰 가능액: " + getFormatWon(possibleMinBid) + "]");	
-		PrintController.bar();
 	}
 
 	// 세자리마다 , 넣어주는 기능
@@ -271,7 +297,7 @@ public class Bidder {
 			return scan.nextInt();
 		} catch (InputMismatchException e) {
 			scan.nextLine();
-			System.out.println("잘못 입력하셨습니다.");
+			System.out.println(">>> 잘못 입력하셨습니다.");
 			return Integer.MIN_VALUE;
 		}
 	}

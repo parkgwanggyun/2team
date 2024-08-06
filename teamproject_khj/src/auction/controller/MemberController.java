@@ -1,6 +1,5 @@
 package auction.controller;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -147,12 +146,12 @@ public class MemberController {
 		scan.nextLine();
 		String searchMemberInfo = scan.nextLine();
 		ArrayList<MemberVO> searchList = memberService.searchMemberList(searchMemberInfo);
+		if(searchMemberInfo.equals("")) {
+			searchMemberInfo = "전체";
+		}
 		if(searchList.size() == 0) {
 			System.out.println("[검색 실패 : 일치하는 회원 정보 없음]");
 			return;
-		}
-		if(searchMemberInfo.equals("")) {
-			searchMemberInfo = "전체";
 		}
 		System.out.println("<'"+searchMemberInfo+ "' 검색 결과>");
 		for(MemberVO member : searchList) {
