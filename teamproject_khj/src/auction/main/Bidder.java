@@ -33,13 +33,14 @@ public class Bidder {
 
 	public Bidder() {
 		try {
+			System.out.println(">>> 서버와 연결을 시도하는 중입니다.");
 			socket = new Socket(SERVER_IP, SERVER_PORT);
-			System.out.println("-> 서버에 연결되었습니다.");
+			System.out.println(">>> 서버에 연결되었습니다.");
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
 
 		}  catch (Exception e) {
-			System.out.println("-> 서버와 연결 할수 없습니다.");
+			System.out.println(">>> 서버와 연결 할수 없습니다.");
 			exitFlag = true;
 			return;
 		}
