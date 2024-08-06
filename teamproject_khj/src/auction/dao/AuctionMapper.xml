@@ -62,7 +62,7 @@
 	</select>	
 	<select id="getBidWithAuctionById" resultMap="BidResultMap">
 		SELECT a.au_num, a.au_date, a.au_name, b.bi_price, b.bi_me_id 
-	    FROM (select * from bid where bi_me_id like #{id} ) b
+	    FROM (select * from bid where bi_me_id = #{id} ) b
 	    INNER JOIN auction a ON b.bi_au_num = a.au_num
 	    WHERE 
 	   		a.au_date like concat('%',#{search},'%') or
