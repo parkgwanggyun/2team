@@ -54,23 +54,23 @@ public class Bidder {
 			System.out.println("2. 회원가입");
 			System.out.println("3. 종료");
 			System.out.print("선택: ");
-			char choice = scan.next().charAt(0);
+			int choice = nextInt();
 
-			if (choice == '1') {
+			if (choice == 1) {
 				member = memberController.logIn();
 				if(member != null) {
 					bidderReceiver();
 					out.println("LOGIN::"+ member.getMe_id()); // 서버에 로그인 알림
 					auctionStart();
 				}
-			} else if (choice == '2') {
+			} else if (choice == 2) {
 				MemberVO nMem = memberController.register();
 				if(nMem == null) {
 					continue;
 				}
 				out.println("REGISTER::"+nMem.getMe_id()+"::"+nMem.getMe_name()+"::"
 						+ nMem.getMe_address() +"::"+ nMem.getMe_contact()); // 서버에 회원가입 알림
-			} else if (choice == '3') {
+			} else if (choice == 3) {
 				if(out != null) {
 					out.println("EXIT");
 				}
@@ -90,9 +90,9 @@ public class Bidder {
 			System.out.println("2. 경매기록조회");
 			System.out.println("3. 나가기");
 			System.out.print("선택: ");
-			char choice = scan.next().charAt(0);
+			int choice = nextInt();
 
-			if (choice == '1') {
+			if (choice == 1) {
 				if(!auctionState) {
 					System.out.println("진행 중인 경매가 없습니다.");
 					PrintController.mniBar();
@@ -101,10 +101,10 @@ public class Bidder {
 				out.println("JOIN::");
 				Bidding = true;
 				bidStart();
-			} else if (choice == '2') {		
+			} else if (choice == 2) {		
 				auctionController.getBidListById(member.getMe_id());
 				PrintController.bar();
-			} else if (choice == '3') {	
+			} else if (choice == 3) {	
 				out.println("LOGOUT::"+ member.getMe_id());
 				break;
 			} else {
@@ -119,8 +119,8 @@ public class Bidder {
 			System.out.println("1. 입찰하기");
 			System.out.println("2. 이전으로");
 			System.out.print("선택: ");
-			char choice = scan.next().charAt(0);
-			if (choice == '1') {	
+			int choice = nextInt();
+			if (choice == 1) {	
 				if(!auctionState) {
 					System.out.println("진행 중인 경매가 없습니다.");
 					PrintController.mniBar();
@@ -144,7 +144,7 @@ public class Bidder {
 						continue;
 					}
 				}
-			} else if (choice == '2') {	
+			} else if (choice == 2) {	
 				Bidding = false;
 				break;
 			} else {
@@ -265,6 +265,15 @@ public class Bidder {
 		int priceInt = Integer.parseInt(price);
 		DecimalFormat format = new DecimalFormat("###,###,###,###");
 		return format.format(priceInt);
+	}
+	public int nextInt() {
+		try {
+			return scan.nextInt();
+		} catch (InputMismatchException e) {
+			scan.nextLine();
+			System.out.println("잘못 입력하셨습니다.");
+			return Integer.MIN_VALUE;
+		}
 	}
 
 }

@@ -339,11 +339,11 @@ public class Auctioneer {
 				//				clientSocket.close();
 			} catch (IOException e) {
 			} finally {
-				if(logId != null) {
-					System.out.println("[나감 > " + logId + "]");
-				} else {
-					System.out.println("[나감 > " + clientSocket + "]");
-				}
+//				if(logId != null) {
+//					System.out.println("[나감 > " + logId + "]");
+//				} else {
+//					System.out.println("[나감 > " + clientSocket + "]");
+//				}
 				clients.remove(out);
 				try {
 					clientSocket.close();
@@ -396,7 +396,7 @@ public class Auctioneer {
 			String[] parts = request.split("::");
 			String id = parts[1];
 			logId = id;
-			System.out.println("[로그인 >> "+ id+"]");	
+			System.out.println("[ "+ id+" >> 로그인 ]");	
 			firstSend = true;
 			if(auctionState) {
 				out.println("AUCTION_ON::경매가 진행 중입니다.");
@@ -409,7 +409,7 @@ public class Auctioneer {
 			String[] parts = request.split("::");
 			String id = parts[1];
 			logId = id;
-			System.out.println("[로그아웃 >> "+ id+"]");	
+			System.out.println("[ "+ id+" >> 로그아웃 ]");	
 			firstSend = true;
 				out.println("AUCTION_OUT::");
 		}
@@ -455,7 +455,7 @@ public class Auctioneer {
 			return scan.nextInt();
 		} catch (InputMismatchException e) {
 			scan.nextLine();
-			System.out.println("숫자만 입력가능");
+			System.out.println("잘못 입력하셨습니다.");
 			return Integer.MIN_VALUE;
 		}
 	}
